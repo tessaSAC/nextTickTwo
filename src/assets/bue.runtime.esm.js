@@ -1905,7 +1905,7 @@ function withMacroTask(fn) {
 }
 
 function nextTick(cb, ctx) {
-  console.log('nextTick called')
+  console.warn('nextTick')
 
   var _resolve;
   callbacks.push(function () {
@@ -4647,7 +4647,7 @@ function renderMixin(Vue) {
   installRenderHelpers(Vue.prototype);
 
   Vue.prototype.$nextTick = function (fn) {
-    console.log('$nextTick called')
+    console.warn('💲nextTick 🤑🤑🤑')
 
     return nextTick(fn, this)
   };
@@ -8243,17 +8243,17 @@ if (inBrowser) {
         );
       }
     }
-    if (process.env.NODE_ENV !== 'production' &&
-      process.env.NODE_ENV !== 'test' &&
-      config.productionTip !== false &&
-      typeof console !== 'undefined'
-    ) {
-      console[console.info ? 'info' : 'log'](
-        "You are running Vue in development mode.\n" +
-        "Make sure to turn on production mode when deploying for production.\n" +
-        "See more tips at https://vuejs.org/guide/deployment.html"
-      );
-    }
+    // if (process.env.NODE_ENV !== 'production' &&
+    //   process.env.NODE_ENV !== 'test' &&
+    //   config.productionTip !== false &&
+    //   typeof console !== 'undefined'
+    // ) {
+    //   console[console.info ? 'info' : 'log'](
+    //     "You are running Vue in development mode.\n" +
+    //     "Make sure to turn on production mode when deploying for production.\n" +
+    //     "See more tips at https://vuejs.org/guide/deployment.html"
+    //   );
+    // }
   }, 0);
 }
 

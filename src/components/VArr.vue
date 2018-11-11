@@ -22,23 +22,12 @@ export default {
     }
   },
 
-  watch: {
-    $nextTick() {
-      console.log('nextTick')
-    },
-  },
-
   beforeCreate() {
     console.log('beforeCreate')
   },
 
   created() {
     console.log('created')
-
-    this.$nextTick = function(...args) {
-      console.log('nextTick')
-      this.$nextTick(...args)
-    }
   },
 
   beforeMount() {

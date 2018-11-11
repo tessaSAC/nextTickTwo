@@ -13,13 +13,6 @@ export default {
   components: {
     VArr,
   },
-
-  created() {
-    this.$nextTick = function(...args) {
-      console.log('app.nextTick')
-      return this.$nextTick(...args)
-    }
-  },
 }
 </script>
 
