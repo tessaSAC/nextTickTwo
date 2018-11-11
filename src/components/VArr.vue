@@ -12,6 +12,8 @@
 </template>
 
 <script>
+const waitASecond = () => new Promise((resolve, reject) => setTimeout(resolve, 3000))
+
 export default {
   name: 'VArr',
 
@@ -22,19 +24,22 @@ export default {
     }
   },
 
-  beforeCreate() {
+  async beforeCreate() {
+    await waitASecond()
     console.log('beforeCreate')
   },
 
   created() {
-    console.log('created')
+    waitASecond().then(_ => console.log('created'))
   },
 
   beforeMount() {
+    waitASecond()
     console.log('beforeMount')
   },
 
   mounted() {
+    waitASecond()
     console.log('mounted')
 
     this.arr.push(this.count)
@@ -75,20 +80,24 @@ export default {
   },
 
   beforeUpdate() {
+    waitASecond()
     console.log('beforeUpdate')
   },
 
   updated() {
+    waitASecond()
     console.log('updated')
   },
 
   beforeDestroy() {
+    waitASecond()
     console.log('beforeDestroy')
   },
 
   destroyed() {
+    waitASecond()
     console.log('destroyed')
-  }
+  },
 }
 </script>
 

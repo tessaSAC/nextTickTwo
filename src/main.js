@@ -1,4 +1,4 @@
-import Vue from './assets/bue.runtime.esm.js'
+import Vue from './assets/phew.runtime.esm.js'
 import App from './App.vue'
 
 Vue.config.productionTip = false
