@@ -97,7 +97,7 @@ export default {
     console.log('beforeDestroy')
   },
 
-  destroyd() {
+  destroyed() {
     console.log('destroyed')
   }
 }

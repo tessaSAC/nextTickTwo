@@ -1,13 +1,5 @@
-import Vue from 'vue'
+import Vue from './assets/bue.runtime.esm.js'
 import App from './App.vue'
-
-Vue.nextTick = function(...args) {
-  console.log('Vue.nextTick')
-
-  return Vue.nextTick(...args)
-}
-
-console.log(Vue.nextTick)
 
 Vue.config.productionTip = false
 
