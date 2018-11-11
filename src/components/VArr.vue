@@ -12,8 +12,6 @@
 </template>
 
 <script>
-const waitASecond = () => new Promise((resolve, reject) => setTimeout(resolve, 3000))
-
 export default {
   name: 'VArr',
 
@@ -24,34 +22,32 @@ export default {
     }
   },
 
-  async beforeCreate() {
-    await waitASecond()
+  beforeCreate() {
     console.log('beforeCreate')
   },
 
   created() {
-    waitASecond().then(_ => console.log('created'))
   },
 
   beforeMount() {
-    waitASecond()
     console.log('beforeMount')
   },
 
   mounted() {
-    waitASecond()
     console.log('mounted')
 
     this.arr.push(this.count)
     this.count++
 
     console.log(this.count)
+    console.log(this.arr)
 
     setTimeout(_ => {
       this.arr.push(this.count)
       this.count++
 
       console.log(this.count)
+      console.log(this.arr)
     }, 1000)
 
     setTimeout(_ => {
@@ -59,6 +55,7 @@ export default {
       this.count++
 
       console.log(this.count)
+      console.log(this.arr)
     }, 2000)
 
     setTimeout(_ => {
@@ -66,36 +63,68 @@ export default {
       this.count++
 
       console.log(this.count)
+      console.log(this.arr)
     }, 3000)
 
     setTimeout(_ => {
       this.arr.push(this.count)
       this.count++
       console.log(this.count)
+      console.log(this.arr)
 
       this.arr[this.count - 3] = this.count
       this.count++
       console.log(this.count)
+      console.log(this.arr)
     }, 4000)
+
+    setTimeout(_ => {
+      this.arr.push(this.count)
+      this.count++
+      this.arr.push(this.count)
+      this.count++
+
+      console.log('2nd to last')
+      console.log(this.count)
+      console.log(this.arr)
+
+      // setTimeout(_ => {
+      //   this.arr.push(this.count)
+      //   this.count++
+
+      //   console.log(this.count)
+      //   console.log(this.arr)
+      // }, 0);  // this is still counted as within the same task no matter what timeout
+      // It causes this whole microtask to be deferred
+    }, 5000)
+
+    setTimeout(_ => {
+      this.arr.push(this.count)
+      this.count++
+
+      console.log('test')
+      console.log(this.count)
+      console.log(this.arr)
+    }, 5000)  // even with same/shorter timeout it's deferred to a different microtask cycle
   },
 
   beforeUpdate() {
-    waitASecond()
     console.log('beforeUpdate')
+    // console.log(this.count)
+    // console.log(this.arr)
   },
 
   updated() {
-    waitASecond()
     console.log('updated')
+    // console.log(this.count)
+    // console.log(this.arr)
   },
 
   beforeDestroy() {
-    waitASecond()
     console.log('beforeDestroy')
   },
 
   destroyed() {
-    waitASecond()
     console.log('destroyed')
   },
 }
