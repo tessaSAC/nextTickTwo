@@ -1906,6 +1906,7 @@ function withMacroTask(fn) {
 
 function nextTick(cb, ctx) {
   console.warn('nextTick')
+  window.pulley.push([])
 
   var _resolve;
   callbacks.push(function () {

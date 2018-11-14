@@ -1,16 +1,3 @@
-<template>
-<div class="VArr">
-  <ul>
-    <li
-      v-for="(bucket, i) in pulley"
-      :key="i"
-    >
-      {{ bucket }}
-    </li>
-  </ul>
-</div>
-</template>
-
 <script>
 export default {
   name: 'VArr',
@@ -18,15 +5,20 @@ export default {
   data() {
     return {
       pulley: [[]],
-      count: 0
+      count: 0,
     }
   },
 
   computed: {
     lastBucket() {
-      return this.pulley[this.pulley.length - 1]  // this doesn't work idky
-      // return this.pulley.length - 1
-    }
+      return this.pulley[this.pulley.length - 1]
+    },
+  },
+
+  watch: {
+    $nextTick() {
+      console.log('nextTick')
+    },
   },
 
   beforeCreate() {
@@ -34,6 +26,7 @@ export default {
   },
 
   created() {
+    window.pulley = this.pulley
     console.log('created')
   },
 
@@ -45,42 +38,40 @@ export default {
     console.log('mounted')
 
     this.radd()
-    this.badd()  // It seems like cheating reactivity only works on the root level; idky
-    this.radd()
 
-    // setTimeout(this.radd, 1000)
+    setTimeout(this.radd, 1000)
 
-    // setTimeout(this.badd(this.lastBucket.length - 1), 2000)
+    setTimeout(this.badd, 3000)  // Doesn't trigger watcher; gets lumped in with next line
+    setTimeout(this.radd, 5000)
 
-    // setTimeout(this.radd, 3000)
+    setTimeout(_ => {
+      this.radd()
+      this.radd()
+      this.badd()
+    }, 7000)
 
-    // setTimeout( _ => {
+    setTimeout(_ => {
+      this.radd()
+      this.radd()
 
-    //   this.radd()
-    //   this.badd(this.lastBucket.length - 2)
+      // TODO: use this before moving to next step but not during
+      // setTimeout(this.radd, 0);  // this is still counted as within the same task no matter what timeout
+      // It causes this whole microtask to be deferred
+    }, 9000)
 
-    // }, 4000)
+    setTimeout(this.radd, 9000) // even with same/shorter timeout it's deferred to a different task cycle
 
-    // setTimeout( _ => {
-    //   this.radd()
-    //   this.radd()
+    setTimeout(_ => this.pulley[1][1] = 'bad', 11000)
 
-    //   // TODO: use this before moving to next step but not during
-    //   // setTimeout(this.radd, 0);  // this is still counted as within the same task no matter what timeout
-    //   // It causes this whole microtask to be deferred
-    // }, 5000)
-
-    // setTimeout(this.radd, 5000)  // even with same/shorter timeout it's deferred to a different task cycle
+    setTimeout(this.$nextTick, 13000)
   },
 
   beforeUpdate() {
     console.log('beforeUpdate')
-    this.prant()
   },
 
   updated() {
     console.log('updated')
-    this.prant()
   },
 
   beforeDestroy() {
@@ -97,8 +88,8 @@ export default {
     },
 
     badd(idx) {
-      // this.lastBucket[idx] = this.increment()
-      this.lastBucket.push[this.increment()]
+      const whichIdx = this.lastBucket.length > 1 ? this.lastBucket.length - 2 : 0
+      this.lastBucket[whichIdx] = 'bad'
       this.prant()
     },
 
@@ -108,29 +99,58 @@ export default {
     },
 
     prant() {
-      console.log(`count: ${ this.count }`)
+      console.log(`count: ${this.count}`)
       console.log('buckets')
       console.dir(this.pulley)
-    }
+    },
   },
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+<template>
+  <div class="VArr" ref="hi">
+    <div
+      v-if="bucket.length"
+      v-for="(bucket, idx) in pulley"
+      :key="idx"
+      class="bucket"
+    >
+      <div
+        v-for="(supply, idx) in bucket"
+        :key=idx
+        class="supply"
+        :class="typeof supply === 'number' ? 'good' : 'bad'"
+      />
+    </div>
+  </div>
+</template>
+
 <style lang="scss" scoped>
-h1,
-h2 {
-  font-weight: normal;
+.VArr {
+  display: flex;
+  flex-wrap: wrap;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.bucket {
+  display: flex;
+  padding: 1rem;
+  background: midnightblue;
+  border-radius: 1rem;
+  margin: 2rem;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+
+.supply {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  margin: 1rem;
 }
-a {
-  color: #42b983;
+
+.good {
+  background: #42b983;
+}
+
+.bad {
+  background: tomato;
 }
 </style>
