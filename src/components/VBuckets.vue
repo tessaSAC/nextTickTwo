@@ -83,6 +83,10 @@ export default {
   },
 
   methods: {
+    fillTick(num) {
+      return num === 6 ? '$' : num + 1
+    },
+
     increment() {
       return ++this.count
     },
@@ -108,7 +112,23 @@ export default {
 </script>
 
 <template>
-  <div class="VBuckets" ref="hi">
+<div class="VBuckets">
+  <div class="title">
+    <p>nextTicks</p>
+  </div>
+  <div class="nextTicks">
+    <div
+      v-for="(tick, idx) in pulley"
+      class="tick"
+      :key="idx"
+    >
+      <p>{{ fillTick(idx) }}</p>
+    </div>
+  </div>
+  <div class="title">
+    <p>buckets</p>
+  </div>
+  <div class="pulley" ref="hi">
     <div
       v-if="bucket.length"
       v-for="(bucket, idx) in pulley"
@@ -123,27 +143,90 @@ export default {
       />
     </div>
   </div>
+</div>
 </template>
 
 <style lang="scss" scoped>
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
 .VBuckets {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  grid-gap: 0.5rem;
+
+  > div {
+    border-radius: 0.2rem;
+    background: mistyrose;
+    padding: 1rem;
+  }
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-weight: 500;
+
+  .p {
+    display: inline-block;
+    margin: 0;
+  }
+}
+
+.nextTicks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tick {
+  animation: fadein 2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem;
+  border: mistyrose 1px solid;
+  border-radius: 0.2rem;
+  background: indianred;
+  width: 1.5rem;
+  height: 1.5rem;
+
+  p {
+    display: inline-block;
+    margin: 0;
+    color: white;
+    font-size: 0.4
+  }
+
+  &:nth-child(7) {
+    background: #42b983;
+  }
+}
+
+.pulley {
   display: flex;
   flex-wrap: wrap;
 }
 
 .bucket {
+  animation: fadein 1s;
   display: flex;
-  padding: 1rem;
+  align-items: center;
+  margin: 0.5rem;
+  border-radius: 0.2rem;
   background: midnightblue;
-  border-radius: 1rem;
-  margin: 2rem;
+  padding: 0.5rem;
 }
 
 .supply {
+  animation: fadein 2s;
+  margin: 0.5rem;
+  border-radius: 0.2rem;
   width: 2rem;
   height: 2rem;
-  border-radius: 50%;
-  margin: 1rem;
 }
 
 .good {

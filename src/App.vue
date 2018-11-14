@@ -21,5 +21,6 @@ export default {
 <style>
 #app {
   padding: 5rem;
+  font-family: Roboto;
 }
 </style>
