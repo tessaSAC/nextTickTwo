@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'VArr',
+  name: 'VBuckets',
 
   data() {
     return {
@@ -108,7 +108,7 @@ export default {
 </script>
 
 <template>
-  <div class="VArr" ref="hi">
+  <div class="VBuckets" ref="hi">
     <div
       v-if="bucket.length"
       v-for="(bucket, idx) in pulley"
@@ -126,7 +126,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.VArr {
+.VBuckets {
   display: flex;
   flex-wrap: wrap;
 }

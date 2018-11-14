@@ -6931,11 +6931,11 @@ function getStyle(vnode, checkChild) {
 
 /*  */
 
-var cssVarRE = /^--/;
+var cssVBucketsE = /^--/;
 var importantRE = /\s*!important$/;
 var setProp = function (el, name, val) {
   /* istanbul ignore if */
-  if (cssVarRE.test(name)) {
+  if (cssVBucketsE.test(name)) {
     el.style.setProperty(name, val);
   } else if (importantRE.test(val)) {
     el.style.setProperty(name, val.replace(importantRE, ''), 'important');
