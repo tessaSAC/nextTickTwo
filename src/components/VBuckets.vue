@@ -15,12 +15,6 @@ export default {
     },
   },
 
-  watch: {
-    $nextTick() {
-      console.log('nextTick')
-    },
-  },
-
   beforeCreate() {
     console.log('beforeCreate')
   },
