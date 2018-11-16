@@ -13,6 +13,11 @@ export default {
     lastBucket() {
       return this.pulley[this.pulley.length - 1]
     },
+
+    tickCount() {
+      // $nextTick and nextTick count as one; don't count initial tick
+      return this.pulley.slice(1)
+    },
   },
 
   beforeCreate() {
@@ -20,8 +25,9 @@ export default {
   },
 
   created() {
-    window.pulley = this.pulley
     console.log('created')
+    window.pulley = this.pulley
+    // this.$nextTick(_ => console.log('👻👻👻👻👻👻👻'))
   },
 
   beforeMount() {
@@ -30,6 +36,7 @@ export default {
 
   mounted() {
     console.log('mounted')
+    // this.$nextTick(_ => console.log('👻👻👻👻👻👻👻'))
 
     this.radd()
 
@@ -112,7 +119,7 @@ export default {
   </div>
   <div class="nextTicks">
     <div
-      v-for="(tick, idx) in pulley"
+      v-for="(tick, idx) in tickCount"
       class="tick"
       :key="idx"
     >
