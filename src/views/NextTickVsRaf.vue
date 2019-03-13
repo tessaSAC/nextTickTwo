@@ -1,16 +1,11 @@
 <script>
 export default {
   computed: {
-    boxPosLeft() { return this.$refs.box.getBoundingClientRect().left }
-  },
-
-  mounted() {
-    // this.$watch('boxPosLeft', function(newVal) { console.log(newVal) })
-    this.$watch('$refs.box.getBoundingClientRect()', function(newVal) { console.log(newVal) })  // cannot watch this it seems
+    boxPosLeft() { return this.$refs.box.getBoundingClientRect().left },
   },
 
   methods: {
-    moveBox(distanceX) {this.$refs.box.style.transform = `translateX(${ distanceX })` },
+    moveBox(distanceX) { this.$refs.box.style.transform = `translateX(${ distanceX })` },
 
     moveSetTimeout() {
       this.moveBox('1000px')
