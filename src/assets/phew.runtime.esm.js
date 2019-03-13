@@ -6434,7 +6434,10 @@ function createPatchFunction (backend) {
     }
   }
 
+
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
+    console.log('Patching the dom -- this runs between `beforeUpdate` and `updated`, and between `beforeMount` and `mounted`, as well as before `beforeCreate` fsr')
+
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) { invokeDestroyHook(oldVnode); }
       return
