@@ -13,6 +13,6 @@ git init
 git add -A
 git commit -m 'deploy'
 
-git push -f https://github.com/tessaSAC/nextTickDTB.git master:gh-pages
+git push -f https://github.com/tessaSAC/nextTickTwo.git master:gh-pages
 
 cd -
