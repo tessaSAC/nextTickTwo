@@ -1,84 +1,98 @@
 <script>
 export default {
+  computed: {
+    boxPosLeft() { return this.$refs.box.getBoundingClientRect().left }
+  },
+
+  beforeUpdate() {
+    console.log('beforeUpdate', boxPosLeft)  // these don't do anything
+  },
+
+  updated() {
+    this.$nextTick(function () {  // This doesn't do anything either
+      console.log('updated', boxPosLeft)
+    })
+  },
+
   methods: {
-    reset() {
-      this.$refs.box.style.transform = 'translateX(0px)'
-    },
+    moveBox(distanceX) {this.$refs.box.style.transform = `translateX(${ distanceX })` },
 
     moveSetTimeout() {
-      this.$refs.box.style.transform = 'translateX(1000px)'
+      this.moveBox('1000px')
       // debugger  // not needed; definitely shudders
-      setTimeout(() => this.$refs.box.style.transform = 'translateX(500px)', 0)
+      setTimeout(_ => this.moveBox('500px'), 0)
     },
 
     moveSingleRaf() {
-      this.$refs.box.style.transform = 'translateX(1000px)'
+      this.moveBox('1000px')
       // debugger  // does move to 1000; just too fast to see
-      requestAnimationFrame(() => this.$refs.box.style.transform = 'translateX(500px)')
+      requestAnimationFrame(_ => this.moveBox('500px'))
     },
 
     moveNestedRaf() {
-      this.$refs.box.style.transform = 'translateX(1000px)'
+      this.moveBox('1000px')
       // debugger  // no need to test; does shudder. TODO: Log rAF and see if this is just more fps
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => this.$refs.box.style.transform = 'translateX(500px)')
+      requestAnimationFrame(_ => {
+        requestAnimationFrame(_ => this.moveBox('500px'))
       })
     },
 
     moveSingleNextTick() {
-      this.$refs.box.style.transform = 'translateX(1000px)'
+      this.moveBox('1000px')
       // debugger  // this one moves too
-      this.$nextTick(() => {
-        this.$refs.box.style.transform = 'translateX(500px)'
+      this.$nextTick(_ => {
+        this.moveBox('500px')
       })
     },
 
     moveSingleNextTickTwiceInside() {
       // debugger  // this one only moves 500
-      this.$nextTick(() => {
-        this.$refs.box.style.transform = 'translateX(1000px)'
-        this.$refs.box.style.transform = 'translateX(500px)'
+      this.$nextTick(_ => {
+        this.moveBox('1000px')
+        this.moveBox('500px')
       })
     },
 
     moveDoubleNextTick() {
       // debugger  // It does move!!
-      this.$nextTick(() => this.$refs.box.style.transform = 'translateX(1000px)')
-      this.$nextTick(() => this.$refs.box.style.transform = 'translateX(500px)')
+      this.$nextTick(_ => this.moveBox('1000px'))
+      this.$nextTick(_ => this.moveBox('500px'))
     },
 
     moveNestedNextTick() {
-      this.$refs.box.style.transform = 'translateX(1000px)'
+      this.moveBox('1000px')
       // debugger  // this one also moves; are they different nexTicks or not? TODO: check two nextTicks in a row as well
-      this.$nextTick(() => {
-        this.$refs.box.style.transform = 'translateX(500px)'
+      this.$nextTick(_ => {
+        this.moveBox('500px')
       })
     },
 
     moveLoopedNextTick() {
-      this.$refs.box.style.transform = 'translateX(1000px)'
+      this.moveBox('1000px')
       // debugger  // this moves the box
 
-      // this.$nextTick(() => {
+      // this.$nextTick(_ => {
       //   console.log('first tick')
-      //   requestAnimationFrame(() => {})  // this doesn't cause execution to slow down enough to see this render
+      //   requestAnimationFrame(_ => {})  // this doesn't cause execution to slow down enough to see this render
       //   window.getComputedStyle(this.$refs.box)
-      //   this.$refs.box.style.transform = 'translateX(500px)'
+      //   this.moveBox('500px')
       // })
 
       for(let i = 0; i < 1000; ++i) {
-        this.$nextTick(() => {
+        this.$nextTick(_ => {
           console.count('nextTick')
-          console.log(this.$refs.box.getBoundingClientRect().left)  // This shows the 1000px movement
+          console.log(this.boxPosLeft)  // This shows the 1000px movement
         })
       }
 
-      this.$nextTick(() => {
+      this.$nextTick(_ => {
         console.log('second next tick')
-        this.$refs.box.style.transform = 'translateX(500px)'
-        console.log(this.$refs.box.getBoundingClientRect().left)
+        this.moveBox('500px')
+        console.log(this.boxPosLeft)
       })
     },
+
+    reset() { this.moveBox(0) },
   },
 }
 </script>
