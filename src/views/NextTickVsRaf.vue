@@ -7,19 +7,19 @@ export default {
 
     moveSetTimeout() {
       this.$refs.box.style.transform = 'translateX(1000px)'
-      // debugger
+      // debugger  // not needed; definitely shudders
       setTimeout(() => this.$refs.box.style.transform = 'translateX(500px)', 0)
     },
 
     moveSingleRaf() {
       this.$refs.box.style.transform = 'translateX(1000px)'
-      // debugger
+      // debugger  // does move to 1000; just too fast to see
       requestAnimationFrame(() => this.$refs.box.style.transform = 'translateX(500px)')
     },
 
     moveNestedRaf() {
       this.$refs.box.style.transform = 'translateX(1000px)'
-      // debugger
+      // debugger  // no need to test; does shudder. TODO: Log rAF and see if this is just more fps
       requestAnimationFrame(() => {
         requestAnimationFrame(() => this.$refs.box.style.transform = 'translateX(500px)')
       })
@@ -27,15 +27,21 @@ export default {
 
     moveSingleNextTick() {
       this.$refs.box.style.transform = 'translateX(1000px)'
-      // debugger
+      // debugger  // this one moves too
       this.$nextTick(() => {
         this.$refs.box.style.transform = 'translateX(500px)'
       })
     },
 
+    moveDoubleNextTick() {
+      // debugger  // It does move!!
+      this.$nextTick(() => this.$refs.box.style.transform = 'translateX(1000px)')
+      this.$nextTick(() => this.$refs.box.style.transform = 'translateX(500px)')
+    },
+
     moveNestedNextTick() {
       this.$refs.box.style.transform = 'translateX(1000px)'
-      // debugger
+      // debugger  // this one also moves; are they different nexTicks or not? TODO: check two nextTicks in a row as well
       this.$nextTick(() => {
         this.$refs.box.style.transform = 'translateX(500px)'
       })
@@ -43,8 +49,8 @@ export default {
 
     moveLoopedNextTick() {
       this.$refs.box.style.transform = 'translateX(1000px)'
+      // debugger  // this moves the box
 
-      // debugger
       // this.$nextTick(() => {
       //   console.log('first tick')
       //   requestAnimationFrame(() => {})  // this doesn't cause execution to slow down enough to see this render
@@ -76,6 +82,7 @@ export default {
     <button @click="moveSingleRaf">Move Box with Single rAF</button>
     <button @click="moveNestedRaf">Move Box with Nested rAF</button>
     <button @click="moveSingleNextTick">Move Box with Single nextTick</button>
+    <button @click="moveDoubleNextTick">Move Box with Double nextTick</button>
     <button @click="moveNestedNextTick">Move Box with Nested nextTick</button>
     <button @click="moveLoopedNextTick">Move Box with Looped nextTick</button>
     <button @click="reset">Reset</button>
