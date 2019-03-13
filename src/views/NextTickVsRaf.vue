@@ -1,0 +1,104 @@
+<script>
+export default {
+  methods: {
+    reset() {
+      this.$refs.box.style.transform = 'translateX(0px)'
+    },
+
+    moveSetTimeout() {
+      this.$refs.box.style.transform = 'translateX(1000px)'
+      // debugger
+      setTimeout(() => this.$refs.box.style.transform = 'translateX(500px)', 0)
+    },
+
+    moveSingleRaf() {
+      this.$refs.box.style.transform = 'translateX(1000px)'
+      // debugger
+      requestAnimationFrame(() => this.$refs.box.style.transform = 'translateX(500px)')
+    },
+
+    moveNestedRaf() {
+      this.$refs.box.style.transform = 'translateX(1000px)'
+      // debugger
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => this.$refs.box.style.transform = 'translateX(500px)')
+      })
+    },
+
+    moveSingleNextTick() {
+      this.$refs.box.style.transform = 'translateX(1000px)'
+      // debugger
+      this.$nextTick(() => {
+        this.$refs.box.style.transform = 'translateX(500px)'
+      })
+    },
+
+    moveNestedNextTick() {
+      this.$refs.box.style.transform = 'translateX(1000px)'
+      // debugger
+      this.$nextTick(() => {
+        this.$refs.box.style.transform = 'translateX(500px)'
+      })
+    },
+
+    moveLoopedNextTick() {
+      this.$refs.box.style.transform = 'translateX(1000px)'
+
+      // debugger
+      // this.$nextTick(() => {
+      //   console.log('first tick')
+      //   requestAnimationFrame(() => {})  // this doesn't cause execution to slow down enough to see this render
+      //   window.getComputedStyle(this.$refs.box)
+      //   this.$refs.box.style.transform = 'translateX(500px)'
+      // })
+
+      for(let i = 0; i < 1000; ++i) {
+        this.$nextTick(() => {
+          console.count('nextTick')
+          console.log(this.$refs.box.getBoundingClientRect().left)  // This shows the 1000px movement
+        })
+      }
+
+      this.$nextTick(() => {
+        console.log('second next tick')
+        this.$refs.box.style.transform = 'translateX(500px)'
+        console.log(this.$refs.box.getBoundingClientRect().left)
+      })
+    },
+  },
+}
+</script>
+
+<template>
+<div class="NextTickVsRaf">
+  <div class="controls">
+    <button @click="moveSetTimeout">Move Box with setTimeout</button>
+    <button @click="moveSingleRaf">Move Box with Single rAF</button>
+    <button @click="moveNestedRaf">Move Box with Nested rAF</button>
+    <button @click="moveSingleNextTick">Move Box with Single nextTick</button>
+    <button @click="moveNestedNextTick">Move Box with Nested nextTick</button>
+    <button @click="moveLoopedNextTick">Move Box with Looped nextTick</button>
+    <button @click="reset">Reset</button>
+  </div>
+  <div ref="box" class="box" />
+</div>
+</template>
+
+
+<style lang="scss" scoped>
+.NextTickVsRaf {
+  .controls {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+
+    button { margin: 0 0.5rem; }
+  }
+
+  .box {
+    background: palegreen;
+    width: 100px;
+    height: 100px;
+  }
+}
+</style>

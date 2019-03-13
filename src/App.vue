@@ -1,23 +1,28 @@
 <template>
-  <div id="app">
-    <VBuckets />
+<div id="app">
+  <div id="nav">
+    <router-link to="/vbuckets">nextTick(DTB)</router-link>
+    |
+    <router-link to="/divya">nextTick vs rAF with Divya</router-link>
   </div>
+  <router-view class="content" />
+</div>
 </template>
 
-<script>
-import VBuckets from './components/VBuckets'
-
-export default {
-  name: 'App',
-  components: {
-    VBuckets,
-  },
-}
-</script>
-
-<style>
+<style lang="scss">
 #app {
-  padding: 5rem;
   font-family: Roboto;
+
+  #nav {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 5rem;
+
+    a { margin: 0 0.5rem; }
+  }
+
+  .content {
+    padding: 1rem 5rem;
+  }
 }
 </style>

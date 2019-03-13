@@ -4,7 +4,7 @@ export default {
 
   data() {
     return {
-      pulley: [[]],
+      pulley: [[], ],
       count: 0,
     }
   },
@@ -92,7 +92,7 @@ export default {
       return ++this.count
     },
 
-    badd(idx) {
+    badd() {
       const whichIdx = this.lastBucket.length > 1 ? this.lastBucket.length - 2 : 0
       this.lastBucket[whichIdx] = 'bad'
       this.prant()
@@ -130,19 +130,22 @@ export default {
     <p>buckets</p>
   </div>
   <div class="pulley" ref="hi">
-    <div
-      v-if="bucket.length"
+    <template
       v-for="(bucket, idx) in pulley"
-      :key="idx"
-      class="bucket"
     >
       <div
-        v-for="(supply, idx) in bucket"
-        :key=idx
-        class="supply"
-        :class="typeof supply === 'number' ? 'good' : 'bad'"
-      />
-    </div>
+        v-if="bucket.length"
+        :key="idx"
+        class="bucket"
+      >
+        <div
+          v-for="(supply, idx) in bucket"
+          :key=idx
+          class="supply"
+          :class="typeof supply === 'number' ? 'good' : 'bad'"
+        />
+      </div>
+    </template>
   </div>
 </div>
 </template>
@@ -199,7 +202,7 @@ export default {
     display: inline-block;
     margin: 0;
     color: white;
-    font-size: 0.4
+    font-size: 0.4;
   }
 
   &:nth-child(7) {
