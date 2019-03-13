@@ -4,14 +4,9 @@ export default {
     boxPosLeft() { return this.$refs.box.getBoundingClientRect().left }
   },
 
-  beforeUpdate() {
-    console.log('beforeUpdate', boxPosLeft)  // these don't do anything
-  },
-
-  updated() {
-    this.$nextTick(function () {  // This doesn't do anything either
-      console.log('updated', boxPosLeft)
-    })
+  mounted() {
+    // this.$watch('boxPosLeft', function(newVal) { console.log(newVal) })
+    this.$watch('$refs.box.getBoundingClientRect()', function(newVal) { console.log(newVal) })  // cannot watch this it seems
   },
 
   methods: {
