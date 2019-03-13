@@ -33,6 +33,14 @@ export default {
       })
     },
 
+    moveSingleNextTickTwiceInside() {
+      // debugger  // this one only moves 500
+      this.$nextTick(() => {
+        this.$refs.box.style.transform = 'translateX(1000px)'
+        this.$refs.box.style.transform = 'translateX(500px)'
+      })
+    },
+
     moveDoubleNextTick() {
       // debugger  // It does move!!
       this.$nextTick(() => this.$refs.box.style.transform = 'translateX(1000px)')
@@ -82,6 +90,7 @@ export default {
     <button @click="moveSingleRaf">Move Box with Single rAF</button>
     <button @click="moveNestedRaf">Move Box with Nested rAF</button>
     <button @click="moveSingleNextTick">Move Box with Single nextTick</button>
+    <button @click="moveSingleNextTickTwiceInside">Move Box with Single nextTick Twice Inside</button>
     <button @click="moveDoubleNextTick">Move Box with Double nextTick</button>
     <button @click="moveNestedNextTick">Move Box with Nested nextTick</button>
     <button @click="moveLoopedNextTick">Move Box with Looped nextTick</button>
