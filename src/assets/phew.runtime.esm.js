@@ -1907,6 +1907,7 @@ function flushCallbacks () {
   for (var i = 0; i < copies.length; i++) {
     copies[i]();
   }
+  console.log('done flushing callbacks')
 }
 
 // Here we have async deferring wrappers using microtasks.
