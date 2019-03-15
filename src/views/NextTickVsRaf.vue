@@ -1,7 +1,18 @@
 <script>
 export default {
+  data: _ => ({ show: true, }),
+
   computed: {
     boxPosLeft() { return this.$refs.box.getBoundingClientRect().left },
+  },
+
+  beforeCreate() {
+    const raf = window.requestAnimationFrame
+
+    window.requestAnimationFrame = function(args) {
+      console.log('requestAnimationFrame')
+      return raf(args)
+    }
   },
 
   methods: {
@@ -82,6 +93,11 @@ export default {
       })
     },
 
+    rerender() {
+      console.log('RERENDERING')
+      this.$forceUpdate()  // why doesn't this work inline?? wth
+    },
+
     reset() { this.moveBox(0) },
   },
 }
@@ -89,6 +105,10 @@ export default {
 
 <template>
 <div class="NextTickVsRaf">
+  <div class="controls">
+    <button @click="rerender">RERENDER</button>
+    <button @click="show = !show">v-if</button>
+  </div>
   <div class="controls">
     <button @click="moveSetTimeout">Move Box with setTimeout</button>
     <button @click="moveSingleRaf">Move Box with Single rAF</button>
@@ -101,6 +121,7 @@ export default {
     <button @click="reset">Reset</button>
   </div>
   <div ref="box" class="box" />
+  <h1 v-if="show">⏱</h1>
 </div>
 </template>
 
