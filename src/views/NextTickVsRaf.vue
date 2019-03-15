@@ -64,7 +64,15 @@ export default {
       this.moveBox('1000px')
       // debugger  // this one also moves; are they different nexTicks or not? TODO: check two nextTicks in a row as well
       this.$nextTick(_ => {
-        this.moveBox('500px')
+        this.$nextTick(_ => this.moveBox('500px'))
+      })
+    },
+
+    moveNestedNextTickInterleaved() {
+      // debugger  // this one also moves; are they different nexTicks or not? TODO: check two nextTicks in a row as well
+      this.$nextTick(_ => {
+        this.moveBox('1000px')
+        this.$nextTick(_ => this.moveBox('500px'))
       })
     },
 
@@ -117,6 +125,7 @@ export default {
     <button @click="moveSingleNextTickTwiceInside">Move Box with Single nextTick Twice Inside</button>
     <button @click="moveDoubleNextTick">Move Box with Double nextTick</button>
     <button @click="moveNestedNextTick">Move Box with Nested nextTick</button>
+    <button @click="moveNestedNextTickInterleaved">Move Box with Nested nextTick Interleaved</button>
     <button @click="moveLoopedNextTick">Move Box with Looped nextTick</button>
     <button @click="reset">Reset</button>
   </div>
