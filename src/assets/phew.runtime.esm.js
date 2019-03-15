@@ -1900,6 +1900,7 @@ var callbacks = [];
 var pending = false;
 
 function flushCallbacks () {
+  console.log('flushing callbacks')
   pending = false;
   var copies = callbacks.slice(0);
   callbacks.length = 0;
