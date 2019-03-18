@@ -1,6 +1,10 @@
 <script>
 export default {
-  data: _ => ({ show: true, }),
+  data: _ => ({
+    output: [],
+    show: true,
+    switch: true,
+  }),
 
   computed: {
     boxPosLeft() { return this.$refs.box.getBoundingClientRect().left },
@@ -16,6 +20,32 @@ export default {
   },
 
   methods: {
+    flipIt() { this.switch = !this.switch },
+
+    async flipWithNextTick() {
+      this.output.unshift(`starting value: ${ this.switch }`)
+      this.$nextTick(_ => {
+        this.flipIt()
+        this.output.unshift(`nextTicked value A: ${ this.switch }`)
+      })
+      window.requestAnimationFrame(_ => this.output.unshift(`rAF value 01: ${ this.switch }`))
+      this.$nextTick(_ => this.output.unshift(`nextTicked value B: ${ this.switch }`))
+      await window.requestAnimationFrame(_ => this.output.unshift(`rAF value 02: ${ this.switch }`))
+      this.output.unshift('THE END 🏰')
+    },
+
+    async flipWithRaf() {
+      this.output.unshift(`starting value: ${ this.switch }`)
+      window.requestAnimationFrame(_ => {
+        this.flipIt()
+        this.output.unshift(`rAF value 01: ${ this.switch }`)
+      })
+      this.$nextTick(_ => this.output.unshift(`nextTicked value A: ${ this.switch }`))
+      window.requestAnimationFrame(_ => this.output.unshift(`rAF value 02: ${ this.switch }`))
+      await this.$nextTick(_ => this.output.unshift(`nextTicked value B: ${ this.switch }`))
+      this.output.unshift('THE END 🏰')
+    },
+
     moveBox(distanceX) { this.$refs.box.style.transform = `translateX(${ distanceX })` },
 
     moveSetTimeout() {
@@ -69,7 +99,7 @@ export default {
     },
 
     moveNestedNextTickInterleaved() {
-      // debugger  // this one also moves; are they different nexTicks or not? TODO: check two nextTicks in a row as well
+      // debugger  // this one also moves; are they different nexTicks or not?
       this.$nextTick(_ => {
         this.moveBox('1000px')
         this.$nextTick(_ => this.moveBox('500px'))
@@ -129,8 +159,19 @@ export default {
     <button @click="moveLoopedNextTick">Move Box with Looped nextTick</button>
     <button @click="reset">Reset</button>
   </div>
+
   <div ref="box" class="box" />
   <h1 v-if="show">⏱</h1>
+
+  <div class="logger">
+    <div class="controls">
+      <button @click="flipWithNextTick">Flip value with nextTick</button>
+      <button @click="flipWithRaf">Flip value with rAF</button>
+    </div>
+    <div class="scroller">
+      <p v-for="(line, idx) in output" :key="idx">{{ line }}</p>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -149,6 +190,21 @@ export default {
     background: palegreen;
     width: 100px;
     height: 100px;
+  }
+
+  .logger {
+    display: flex;
+    height: 200px;
+
+    div { width: 50%; }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      margin-right: 5vw;
+    }
+
+    .scroller { overflow-y: scroll; }
   }
 }
 </style>
