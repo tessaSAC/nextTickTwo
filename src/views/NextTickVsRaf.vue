@@ -204,7 +204,7 @@ export default {
     <div class="scroller">
       <p v-for="(line, idx) in output" :key="idx">{{ `${ output.length - (idx + 1) }: ${ line }` }}</p>
     </div>
-    <p ref="watchedValue centered" class="watchedValue">{{ watchedVal }}</p>
+    <p ref="watchedValue" class="watchedValue centered">{{ watchedVal }}</p>
   </div>
 </div>
 </template>
