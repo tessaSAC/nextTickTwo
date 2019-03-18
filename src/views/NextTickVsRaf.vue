@@ -3,11 +3,13 @@ export default {
   data: _ => ({
     output: [],
     show: true,
-    switch: true,
+    watchedVal: true,
   }),
 
   computed: {
     boxPosLeft() { return this.$refs.box.getBoundingClientRect().left },
+
+    watchedText() { return this.$refs.watchedValue.innerHTML }
   },
 
   beforeCreate() {
@@ -20,27 +22,27 @@ export default {
   },
 
   methods: {
-    flipIt() { this.switch = !this.switch },
+    flipIt() { this.watchedVal = !this.watchedVal },
 
     flipWithNextTick() {
-      this.output.unshift(`starting value: ${ this.switch }`)
+      this.output.unshift(`starting value: ${ this.watchedText }`)
       this.promisedNextTick(_ => {
           this.flipIt()
-          this.output.unshift(`nextTicked-assigned value: ${ this.switch }`)
+          this.output.unshift(`nextTicked data value: ${ this.watchedVal }`)
       })
-      .then(_ => this.promisedRequestAnimationFrame(_ => this.output.unshift(`rAF value: ${ this.switch }`)))
-      .then(_ => this.output.push('STAGE CLEAR 🏰'))
+      .then(_ => this.promisedRequestAnimationFrame(_ => this.output.unshift(`rAF DOM value: ${ this.watchedText }`)))
+      .then(_ => this.output.unshift('STAGE CLEAR 🏰'))
       .catch(console.error)
     },
 
     flipWithRaf() {
-      this.output.unshift(`starting value: ${ this.switch }`)
+      this.output.unshift(`starting value: ${ this.watchedText }`)
       this.promisedRequestAnimationFrame(_ => {
         this.flipIt()
-        this.output.unshift(`rAF-assigned value: ${ this.switch }`)
+        this.output.unshift(`rAF data value: ${ this.watchedVal }`)
       })
-      .then(_ => this.promisedNextTick(_ => this.output.unshift(`nextTicked value: ${ this.switch }`)))
-      .then(_ => this.output.push('STAGE CLEAR 🏰'))
+      .then(_ => this.promisedNextTick(_ => this.output.unshift(`nextTicked DOM value: ${ this.watchedText }`)))
+      .then(_ => this.output.unshift('STAGE CLEAR 🏰'))
       .catch(console.error)
     },
 
@@ -185,6 +187,7 @@ export default {
     <div class="scroller">
       <p v-for="(line, idx) in output" :key="idx">{{ `${ output.length - (idx + 1) }: ${ line }` }}</p>
     </div>
+    <p ref="watchedValue">{{ watchedVal }}</p>
   </div>
 </div>
 </template>
