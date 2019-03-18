@@ -8,8 +8,7 @@ export default {
 
   computed: {
     boxPosLeft() { return this.$refs.box.getBoundingClientRect().left },
-
-    watchedText() { return this.$refs.watchedValue.innerHTML }
+    watchedText() { return this.$refs.watchedValue.innerHTML },
   },
 
   beforeCreate() {
@@ -44,6 +43,23 @@ export default {
       .then(_ => this.promisedNextTick(_ => this.output.unshift(`nextTicked DOM value: ${ this.watchedText }`)))
       .then(_ => this.output.unshift('STAGE CLEAR 🏰'))
       .catch(console.error)
+    },
+
+    hijackedNextTick() {
+      // From Divya:
+      this.moveBox('1000px')
+      const vm = this
+
+      this.$nextTick(_ => {
+        this.moveBox('500px')  // this is what will get rendered at first
+        new Promise(resolve => {
+          setTimeout(function () {  // this task will circumvent the intended use/timing of nextTick as it is a Task
+            vm.$refs.box.style.transform = 'translateX(1000px)'
+            resolve('divyahhh')
+          }, 1000)
+        })
+        .catch(console.error)
+      })
     },
 
     moveBox(distanceX) { this.$refs.box.style.transform = `translateX(${ distanceX })` },
@@ -172,22 +188,23 @@ export default {
     <button @click="moveNestedNextTick">Move Box with Nested nextTick</button>
     <button @click="moveNestedNextTickInterleaved">Move Box with Nested nextTick Interleaved</button>
     <button @click="moveLoopedNextTick">Move Box with Looped nextTick</button>
+    <button @click="hijackedNextTick">Move Box with Divya's Hijacked nextTick</button>
     <button @click="reset">Reset</button>
   </div>
 
   <div ref="box" class="box" />
-  <h1 v-if="show">⏱</h1>
+  <h1 v-if="show" class="centered">⏱</h1>
 
   <div class="logger">
     <div class="controls">
       <button @click="flipWithNextTick">Flip value with nextTick</button>
       <button @click="flipWithRaf">Flip value with rAF</button>
-      <button @click="output = []">clear</button>
+      <button @click="output = []">Clear logger</button>
     </div>
     <div class="scroller">
       <p v-for="(line, idx) in output" :key="idx">{{ `${ output.length - (idx + 1) }: ${ line }` }}</p>
     </div>
-    <p ref="watchedValue">{{ watchedVal }}</p>
+    <p ref="watchedValue centered" class="watchedValue">{{ watchedVal }}</p>
   </div>
 </div>
 </template>
@@ -209,19 +226,39 @@ export default {
     height: 100px;
   }
 
+  .centered {
+    text-align: center;
+  }
+
   .logger {
     display: flex;
+    justify-content: space-evenly;
+    background: peachpuff;
     height: 200px;
+    padding: 1vw;
 
-    div { width: 50%; }
+    div { width: 30%; }
 
     .controls {
       display: flex;
       flex-direction: column;
-      margin-right: 5vw;
+      align-items: center;
+
+      button {
+        width: 10rem;
+        margin: 1vw 0;
+      }
     }
 
-    .scroller { overflow-y: scroll; }
+    .scroller {
+      background: powderblue;
+      overflow-y: scroll;
+      padding: 0.5vw 2vw;
+    }
+
+    .watchedVal {
+      min-width: 3rem;
+    }
   }
 }
 </style>
