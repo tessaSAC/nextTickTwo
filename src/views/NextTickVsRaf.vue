@@ -22,28 +22,26 @@ export default {
   methods: {
     flipIt() { this.switch = !this.switch },
 
-    async flipWithNextTick() {
+    flipWithNextTick() {
       this.output.unshift(`starting value: ${ this.switch }`)
-      this.$nextTick(_ => {
-        this.flipIt()
-        this.output.unshift(`nextTicked value A: ${ this.switch }`)
+      this.promisedNextTick(_ => {
+          this.flipIt()
+          this.output.unshift(`nextTicked-assigned value: ${ this.switch }`)
       })
-      window.requestAnimationFrame(_ => this.output.unshift(`rAF value 01: ${ this.switch }`))
-      this.$nextTick(_ => this.output.unshift(`nextTicked value B: ${ this.switch }`))
-      await window.requestAnimationFrame(_ => this.output.unshift(`rAF value 02: ${ this.switch }`))
-      this.output.unshift('THE END 🏰')
+      .then(_ => this.promisedRequestAnimationFrame(_ => this.output.unshift(`rAF value: ${ this.switch }`)))
+      .then(_ => this.output.push('STAGE CLEAR 🏰'))
+      .catch(console.error)
     },
 
-    async flipWithRaf() {
+    flipWithRaf() {
       this.output.unshift(`starting value: ${ this.switch }`)
-      window.requestAnimationFrame(_ => {
+      this.promisedRequestAnimationFrame(_ => {
         this.flipIt()
-        this.output.unshift(`rAF value 01: ${ this.switch }`)
+        this.output.unshift(`rAF-assigned value: ${ this.switch }`)
       })
-      this.$nextTick(_ => this.output.unshift(`nextTicked value A: ${ this.switch }`))
-      window.requestAnimationFrame(_ => this.output.unshift(`rAF value 02: ${ this.switch }`))
-      await this.$nextTick(_ => this.output.unshift(`nextTicked value B: ${ this.switch }`))
-      this.output.unshift('THE END 🏰')
+      .then(_ => this.promisedNextTick(_ => this.output.unshift(`nextTicked value: ${ this.switch }`)))
+      .then(_ => this.output.push('STAGE CLEAR 🏰'))
+      .catch(console.error)
     },
 
     moveBox(distanceX) { this.$refs.box.style.transform = `translateX(${ distanceX })` },
@@ -131,6 +129,21 @@ export default {
       })
     },
 
+    promisedNextTick(cb) {
+      return new Promise(resolve => this.$nextTick(_ => {
+          cb()
+          resolve()
+      }))
+    },
+
+    promisedRequestAnimationFrame(cb) {
+      // adapted from https://medium.com/@samthor/js-callbacks-to-promises-541adc46c07c
+      return new Promise(resolve => window.requestAnimationFrame(_ => {
+        cb()
+        resolve()
+      }))
+    },
+
     rerender() {
       console.log('RERENDERING')
       this.$forceUpdate()  // why doesn't this work inline?? wth
@@ -167,9 +180,10 @@ export default {
     <div class="controls">
       <button @click="flipWithNextTick">Flip value with nextTick</button>
       <button @click="flipWithRaf">Flip value with rAF</button>
+      <button @click="output = []">clear</button>
     </div>
     <div class="scroller">
-      <p v-for="(line, idx) in output" :key="idx">{{ line }}</p>
+      <p v-for="(line, idx) in output" :key="idx">{{ `${ output.length - (idx + 1) }: ${ line }` }}</p>
     </div>
   </div>
 </div>
