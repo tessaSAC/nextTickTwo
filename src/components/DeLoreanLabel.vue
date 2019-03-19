@@ -23,7 +23,7 @@ export default {
 <style lang="scss">
 .DeLoreanLabel {
   display: inline-block;
-  padding: 0.1rem 0.6rem;
+  padding: 0.2rem 0.6rem;
 
   text-transform: uppercase;
   font-family: Syncopate;

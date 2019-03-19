@@ -109,7 +109,8 @@ export default {
   }
 
   .DeLoreanLabel {
-    margin-top: 3vh;
+    position: relative;
+    top: 0.7rem;
     font-size: 0.9em;
   }
 
@@ -124,7 +125,7 @@ export default {
     margin-left: -1px;
     float: left;
     height: 0;
-    padding-top: 339px / 1829px * 100%;
+    padding-top: 18.5%;
   }
   &:after {
     content: "";

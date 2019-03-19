@@ -56,7 +56,7 @@ export default {
   align-items: center;
   justify-content: center;
 
-  .dashboard { width: 80vw; }
+  .dashboard { width: 70vw; }
 
   .DeLoreanClock {
     filter: drop-shadow(0 0.5rem 0.3rem #000);
