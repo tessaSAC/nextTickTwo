@@ -42,7 +42,7 @@ export default {
     },
 
     labelText: String,
-  }
+  },
 }
 </script>
 
@@ -71,6 +71,7 @@ export default {
       </div>
 
       <DeLoreanCounter
+        class="hour"
         :counterValue="hour"
         :counterColor="textColor"
       >hour</DeLoreanCounter>
@@ -81,6 +82,7 @@ export default {
       </div>
 
       <DeLoreanCounter
+        class="minute"
         :counterValue="minute"
         :counterColor="textColor"
       >min</DeLoreanCounter>

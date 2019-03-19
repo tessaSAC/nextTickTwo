@@ -1,5 +1,9 @@
 <script>
+import promisedMethods from '../mixins/promisedMethods'
+
 export default {
+  mixins: [ promisedMethods, ],
+
   data: _ => ({
     output: [],
     show: true,
@@ -145,21 +149,6 @@ export default {
         this.moveBox('500px')
         console.log(this.boxPosLeft)
       })
-    },
-
-    promisedNextTick(cb) {
-      return new Promise(resolve => this.$nextTick(_ => {
-          cb()
-          resolve()
-      }))
-    },
-
-    promisedRequestAnimationFrame(cb) {
-      // adapted from https://medium.com/@samthor/js-callbacks-to-promises-541adc46c07c
-      return new Promise(resolve => window.requestAnimationFrame(_ => {
-        cb()
-        resolve()
-      }))
     },
 
     rerender() {
