@@ -1,19 +1,23 @@
 <script>
 import DeLoreanCounter from './DeLoreanCounter'
 import DeLoreanLabel from './DeLoreanLabel'
+import DeLoreanLed from './DeLoreanLed'
+import DeLoreanLedLabeled from './DeLoreanLedLabeled'
 
 export default {
   components: {
     DeLoreanCounter,
     DeLoreanLabel,
+    DeLoreanLed,
+    DeLoreanLedLabeled,
   },
 }
 </script>
 
 <template>
 <div class="DeLoreanClock">
-  <div class="centeredYColumn">
-    <div class="clock">
+  <div class="centeredYColumn clock">
+    <div class="lcds">
       <DeLoreanCounter
         counterValue="Nov"
       >month</DeLoreanCounter>
@@ -26,9 +30,19 @@ export default {
         counterValue="1985"
       >year</DeLoreanCounter>
 
+      <div class="centeredYColumn ledContainer">
+        <DeLoreanLedLabeled ledColor="yellow">AM</DeLoreanLedLabeled>
+        <DeLoreanLedLabeled>PM</DeLoreanLedLabeled>
+      </div>
+
       <DeLoreanCounter
         counterValue="01"
       >hour</DeLoreanCounter>
+
+      <div class="centeredYColumn ledContainer">
+        <DeLoreanLed />
+        <DeLoreanLed />
+      </div>
 
       <DeLoreanCounter
         counterValue="21"
@@ -46,11 +60,12 @@ export default {
   align-items: center;
 
   .centeredYColumn {
-    width: 100%;
     justify-content: center;
   }
 
-  .clock {
+  clock: { width: 100%; }
+
+  .lcds {
     width: 100%;
     display: flex;
     justify-content: space-around;
@@ -60,6 +75,10 @@ export default {
     margin-top: 3vh;
     font-size: 0.9em;
   }
+
+  .ledContainer { padding-top: 0.8rem; }
+  .DeLoreanLed + .DeLoreanLed { margin-top: 0.3rem; }
+  .DeLoreanLedLabeled + .DeLoreanLedLabeled { margin-top: 0.3rem; }
 
   // Proportional component size
   &:before {

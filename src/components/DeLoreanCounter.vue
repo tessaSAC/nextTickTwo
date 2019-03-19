@@ -12,20 +12,19 @@ export default {
       type: String,
       default: '#ec352a',
     },
-    counterValue: [ Number, String ],
+    counterValue: [ Number, String, ],
   },
 
   computed: {
     counterValueChars() { return ('' + this.counterValue).split('') },
-    counterValueIsNumber() { return parseInt(this.counterValue) }
+    counterValueIsNumber() { return parseInt(this.counterValue) },
   },
 
   methods: {
     flip(char) {
       if(isNaN(parseInt(char)) && char.toLowerCase() === 'v') return 'flip'
-      return 'testy'
-    }
-  }
+    },
+  },
 }
 </script>
 
