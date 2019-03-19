@@ -41,6 +41,9 @@ export default {
   }),
 
   computed: {
+  },
+
+  methods: {
     destinationHour() {
       const tens = this.getInnerHtml(document.querySelector('#app > div.DeLorean.content > div.dashboard > div:nth-child(1) > div > div.lcds > div.DeLoreanLabeledSlot.DeLoreanCounter.hour > div > div.counter > div:nth-child(1) > div.opaque'))
       const ones = this.getInnerHtml(document.querySelector('#app > div.DeLorean.content > div.dashboard > div:nth-child(1) > div > div.lcds > div.DeLoreanLabeledSlot.DeLoreanCounter.hour > div > div.counter > div:nth-child(2) > div.opaque'))
@@ -54,13 +57,11 @@ export default {
 
       return tens + ones
     },
-  },
 
-  methods: {
     getPresentTime() {
       Object.assign(this.present, {
-        hour: this.destinationHour,
-        minute: this.destinationMinute,
+        hour: this.destinationHour(),
+        minute: this.destinationMinute(),
       })
     },
 
@@ -80,11 +81,7 @@ export default {
       .catch(console.error)
     },
 
-    travel() {
-      Object.assign(this.destination, {
-        minute: this.destination.minute + 1,
-      })
-    },
+    travel() { ++this.destination.minute },
   },
 }
 </script>
