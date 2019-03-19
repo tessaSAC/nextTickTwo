@@ -9,7 +9,7 @@ export default {
 <template>
 <div class="DeLoreanClock">
   <DeLoreanCounter
-    :counterValue="1985"
+    counterValue="198V"
   >month</DeLoreanCounter>
 </div>
 </template>

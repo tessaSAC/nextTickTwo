@@ -12,35 +12,41 @@ export default {
       type: String,
       default: '#ec352a',
     },
-    counterValue: Number,
+    counterValue: [ Number, String ],
   },
 
   computed: {
     counterValueChars() { return ('' + this.counterValue).split('') },
+    counterValueIsNumber() { return parseInt(this.counterValue) }
   },
+
+  methods: {
+    flip(char) {
+      if(isNaN(parseInt(char)) && char.toLowerCase() === 'v') return 'flip'
+      return 'testy'
+    }
+  }
 }
 </script>
 
 <template>
 <DeLoreanLabeledSlot class="DeLoreanCounter">
-  <!-- <div class="centeredYColumn"> -->
-    <slot slot="labelText" />
+  <slot slot="labelText" />
 
-    <div slot="clockUi" class="counter">
-      <div
-        v-for="(digit, idx) in counterValueChars"
-        :key="idx"
-        class="digit"
-        :style="{ color: counterColor }"
-      >
-        <div class="transparent">
-          0<span class="dot">.</span>
-        </div>
-
-        <div class="opaque">{{ digit }}</div>
+  <div slot="clockUi" class="counter">
+    <div
+      v-for="(char, idx) in counterValueChars"
+      :key="idx"
+      class="char"
+      :style="{ color: counterColor }"
+    >
+      <div v-if="counterValueIsNumber" class="transparent">
+        0<span class="dot">.</span>
       </div>
+
+      <div class="opaque" :class="flip(char)">{{ char }}</div>
     </div>
-  <!-- </div> -->
+  </div>
 </DeLoreanLabeledSlot>
 </template>
 
@@ -53,7 +59,7 @@ export default {
     padding-right: 0.2rem;
   }
 
-  .digit {
+  .char {
     position: relative;
     top: -0.3rem;
     width: 3.1rem;
@@ -62,6 +68,13 @@ export default {
     line-height: 3.5rem;
 
     .opaque { position: relative; }
+
+    .flip {
+      transform: scaleX(-1) rotateZ(-26deg);
+      position: relative;
+      top: 0.5rem;
+      left: 0.45rem;
+    }
 
     .transparent {
       opacity: 0.1;
