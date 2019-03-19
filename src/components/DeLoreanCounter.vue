@@ -66,6 +66,7 @@ export default {
     font-family: LCD14;
     font-size: 4rem;
     line-height: 3.5rem;
+    text-transform: uppercase;
 
     .opaque { position: relative; }
 
