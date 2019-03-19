@@ -4,6 +4,8 @@
     <router-link to="/vbuckets">nextTick(DTB)</router-link>
     |
     <router-link to="/divya">nextTick vs rAF with Divya</router-link>
+    |
+    <router-link to="/delorean">back to the Vueture</router-link>
   </div>
   <router-view class="content" />
 </div>

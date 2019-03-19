@@ -1,0 +1,23 @@
+html { font-size: 16px; }
+
+@font-face {
+  font-family: 'LCD14';
+  src: url('fonts/LCD14Italic.otf');
+}
+@font-face {
+  font-family: 'Syncopate';
+  src: url('fonts/Syncopate-Regular.ttf');
+}
+
+.centeredX { text-align: center }
+.centeredYColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.centeredYRow {
+  display: flex;
+  justifyContent: center;
+}
+
+// Why does this work here but not in App :///////////////// boo

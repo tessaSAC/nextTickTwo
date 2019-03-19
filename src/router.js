@@ -14,6 +14,10 @@ export default new Router({
       path: '/divya',
       name: 'divya',
       component: () => import(/* webpackChunkName: "divya" */ './views/NextTickVsRaf.vue'),
+    }, {
+      path: '/delorean',
+      name: 'delorean',
+      component: () => import(/* webpackChunkName: "delorean" */ './views/DeLorean.vue'),
     },
   ],
 })

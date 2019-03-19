@@ -193,7 +193,7 @@ export default {
   </div>
 
   <div ref="box" class="box" />
-  <h1 v-if="show" class="centered">⏱</h1>
+  <h1 v-if="show" class="centeredX">⏱</h1>
 
   <div class="logger">
     <div class="controls">
@@ -204,7 +204,7 @@ export default {
     <div class="scroller">
       <p v-for="(line, idx) in output" :key="idx">{{ `${ output.length - (idx + 1) }: ${ line }` }}</p>
     </div>
-    <p ref="watchedValue" class="watchedValue centered">{{ watchedVal }}</p>
+    <p ref="watchedValue" class="watchedValue centeredX">{{ watchedVal }}</p>
   </div>
 </div>
 </template>
@@ -224,10 +224,6 @@ export default {
     background: palegreen;
     width: 100px;
     height: 100px;
-  }
-
-  .centered {
-    text-align: center;
   }
 
   .logger {
