@@ -63,7 +63,7 @@ export default {
     justify-content: center;
   }
 
-  clock: { width: 100%; }
+  .clock { width: 100%; }
 
   .lcds {
     width: 100%;
