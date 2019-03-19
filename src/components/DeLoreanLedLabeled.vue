@@ -22,10 +22,3 @@ export default {
   </div>
 </DeLoreanLabeledSlot>
 </template>
-
-
-<style lang="scss">
-.DeLoreanLedLabeled {
-
-}
-</style>

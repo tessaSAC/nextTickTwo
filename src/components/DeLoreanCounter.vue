@@ -16,7 +16,11 @@ export default {
   },
 
   computed: {
-    counterValueChars() { return ('' + this.counterValue).split('') },
+    counterValueChars() {
+      let counterValue = '' + this.counterValue
+      if(this.counterValueIsNumber && counterValue.length === 1) counterValue = '0' + counterValue
+      return counterValue.split('')
+    },
     counterValueIsNumber() { return parseInt(this.counterValue) },
   },
 
@@ -67,7 +71,10 @@ export default {
     line-height: 3.5rem;
     text-transform: uppercase;
 
-    .opaque { position: relative; }
+    .opaque {
+      position: relative;
+      text-shadow: rgba(250, 250, 250, 0.3) 0 0 1rem;
+    }
 
     .flip {
       transform: scaleX(-1) rotateZ(-26deg);

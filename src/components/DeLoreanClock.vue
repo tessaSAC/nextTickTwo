@@ -11,6 +11,38 @@ export default {
     DeLoreanLed,
     DeLoreanLedLabeled,
   },
+
+  props: {
+    month: String,
+    day: {
+      Number,
+      default: 0,
+    },
+
+    year: {
+      Number,
+      default: 0,
+    },
+
+    hour: {
+      Number,
+      default: 0,
+    },
+
+    minute: {
+      Number,
+      default: 0,
+    },
+
+    textColor: String,
+
+    ledColor: {
+      type: String,
+      default: 'yellow',
+    },
+
+    labelText: String,
+  }
 }
 </script>
 
@@ -19,24 +51,28 @@ export default {
   <div class="centeredYColumn clock">
     <div class="lcds">
       <DeLoreanCounter
-        counterValue="Nov"
+        :counterValue="month"
+        :counterColor="textColor"
       >month</DeLoreanCounter>
 
       <DeLoreanCounter
-        counterValue="26"
+        :counterValue="day"
+        :counterColor="textColor"
       >day</DeLoreanCounter>
 
       <DeLoreanCounter
-        counterValue="1985"
+        :counterValue="year"
+        :counterColor="textColor"
       >year</DeLoreanCounter>
 
       <div class="centeredYColumn ledContainer">
-        <DeLoreanLedLabeled ledColor="yellow">AM</DeLoreanLedLabeled>
+        <DeLoreanLedLabeled :ledColor="ledColor">AM</DeLoreanLedLabeled>
         <DeLoreanLedLabeled>PM</DeLoreanLedLabeled>
       </div>
 
       <DeLoreanCounter
-        counterValue="01"
+        :counterValue="hour"
+        :counterColor="textColor"
       >hour</DeLoreanCounter>
 
       <div class="centeredYColumn ledContainer">
@@ -45,11 +81,12 @@ export default {
       </div>
 
       <DeLoreanCounter
-        counterValue="21"
+        :counterValue="minute"
+        :counterColor="textColor"
       >min</DeLoreanCounter>
     </div>
 
-    <DeLoreanLabel tapeColor="#050405">destination time</DeLoreanLabel>
+    <DeLoreanLabel tapeColor="#050405">{{ labelText }}</DeLoreanLabel>
   </div>
 </div>
 </template>

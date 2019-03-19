@@ -14,6 +14,7 @@
 <style lang="scss">
 #app {
   font-family: Roboto;
+  height: 100vh;
 
   #nav {
     display: flex;
@@ -25,6 +26,8 @@
 
   .content {
     padding: 1rem 5rem;
+    height: calc(100% - 4.15rem);
+    overflow: hidden;
   }
 }
 </style>
