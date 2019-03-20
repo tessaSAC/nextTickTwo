@@ -42,7 +42,9 @@ export default {
     lcdCommonSelector: '#app > div.DeLorean.content > div.dashboard > div:nth-child(1) > div > div.lcds > div.DeLoreanLabeledSlot.DeLoreanCounter.',
   }),
 
-  methods: {
+  computed: {
+    // wonder why this only gets updated once (why not never or all the time?)
+    // TODO: figure out a way to drill down via ref
     destinationHour() {
       const tens = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }hour > div > div.counter > div:nth-child(1) > div.opaque`))
       const ones = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }hour > div > div.counter > div:nth-child(2) > div.opaque`))
@@ -56,12 +58,14 @@ export default {
 
       return tens + ones
     },
+  },
 
+  methods: {
     getPresentTime() {
-      console.log(this.destinationMinute() + '')
+      console.log(this.destinationMinute + '')
       Object.assign(this.present, {
-        hour: this.destinationHour(),
-        minute: this.destinationMinute(),
+        hour: this.destinationHour,
+        minute: this.destinationMinute,
       })
     },
 
