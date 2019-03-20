@@ -1,4 +1,13 @@
 export default {
+  beforeCreate() {
+    const raf = window.requestAnimationFrame
+
+    window.requestAnimationFrame = function(args) {
+      console.log('requestAnimationFrame')
+      return raf(args)
+    }
+  },
+
   methods: {
     promisedNextTick(cb) {
       return new Promise(resolve => this.$nextTick(_ => {

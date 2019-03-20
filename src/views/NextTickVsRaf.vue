@@ -12,16 +12,7 @@ export default {
 
   computed: {
     boxPosLeft() { return this.$refs.box.getBoundingClientRect().left },
-    watchedText() { return this.$refs.watchedValue.innerHTML },
-  },
-
-  beforeCreate() {
-    const raf = window.requestAnimationFrame
-
-    window.requestAnimationFrame = function(args) {
-      console.log('requestAnimationFrame')
-      return raf(args)
-    }
+    watchedText() { return this.$refs.watchedValue.textContent },
   },
 
   methods: {

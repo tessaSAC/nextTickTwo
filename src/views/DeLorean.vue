@@ -38,27 +38,27 @@ export default {
       textColor: '#f8ef4f',
       labelText: 'time last departed',
     },
-  }),
 
-  computed: {
-  },
+    lcdCommonSelector: '#app > div.DeLorean.content > div.dashboard > div:nth-child(1) > div > div.lcds > div.DeLoreanLabeledSlot.DeLoreanCounter.',
+  }),
 
   methods: {
     destinationHour() {
-      const tens = this.getInnerHtml(document.querySelector('#app > div.DeLorean.content > div.dashboard > div:nth-child(1) > div > div.lcds > div.DeLoreanLabeledSlot.DeLoreanCounter.hour > div > div.counter > div:nth-child(1) > div.opaque'))
-      const ones = this.getInnerHtml(document.querySelector('#app > div.DeLorean.content > div.dashboard > div:nth-child(1) > div > div.lcds > div.DeLoreanLabeledSlot.DeLoreanCounter.hour > div > div.counter > div:nth-child(2) > div.opaque'))
+      const tens = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }hour > div > div.counter > div:nth-child(1) > div.opaque`))
+      const ones = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }hour > div > div.counter > div:nth-child(2) > div.opaque`))
 
       return tens + ones
     },
 
     destinationMinute() {
-      const tens = this.getInnerHtml(document.querySelector('#app > div.DeLorean.content > div.dashboard > div:nth-child(1) > div > div.lcds > div.DeLoreanLabeledSlot.DeLoreanCounter.minute > div > div.counter > div:nth-child(1) > div.opaque'))
-      const ones = this.getInnerHtml(document.querySelector('#app > div.DeLorean.content > div.dashboard > div:nth-child(1) > div > div.lcds > div.DeLoreanLabeledSlot.DeLoreanCounter.minute > div > div.counter > div:nth-child(2) > div.opaque'))
+      const tens = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }minute > div > div.counter > div:nth-child(1) > div.opaque`))
+      const ones = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }minute > div > div.counter > div:nth-child(2) > div.opaque`))
 
       return tens + ones
     },
 
     getPresentTime() {
+      console.log(this.destinationMinute() + '')
       Object.assign(this.present, {
         hour: this.destinationHour(),
         minute: this.destinationMinute(),
@@ -66,7 +66,7 @@ export default {
     },
 
     getInnerHtml(node) {
-      return node.innerHTML
+      return node.textContent  // this doesn't reflect what's on the page!
     },
 
     nextTickToRaf() {
@@ -76,8 +76,8 @@ export default {
     },
 
     rafToNextTick() {
-      this.promisedRequestAnimationFrame(this.travel)
-      .then(_ => this.promisedNextTick(this.getPresentTime))
+      this.promisedRequestAnimationFrame(this.travel)  // fsr a separate nextTick is being triggered before $nextTick
+      .then(_ => this.promisedNextTick(this.getPresentTime))  // but that happens in the other example too
       .catch(console.error)
     },
 
