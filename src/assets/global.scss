@@ -10,6 +10,21 @@ body { margin: 0; }
   src: url('fonts/Syncopate-Regular.ttf');
 }
 
+// BttF Color Scheme:
+// source: https://loading.io/color/feature/BackToTheFuture
+$tan: #9d8f8a;
+$brown: #824121;
+$orange: #e06b2a;
+$white: #f7f4f1;
+$beige: #e7d3ab;
+$marigold: #f3c446;
+$fog: #7f9fbb;
+$blue: #2766a4;
+$slate: #212b41;
+$greyLight: #656a78;
+$greyDark: #656a78;
+$black: #656a78;
+
 .centeredX { text-align: center }
 .centeredYColumn {
   display: flex;
