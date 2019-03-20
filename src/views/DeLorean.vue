@@ -45,27 +45,34 @@ export default {
   computed: {
     // wonder why this only gets updated once (why not never or all the time?)
     // TODO: figure out a way to drill down via ref
+    // If this works I'll be annoyed because it worked both ways on NextTickVsRaf
+    // It didn't work
     destinationHour() {
       const tens = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }hour > div > div.counter > div:nth-child(1) > div.opaque`))
       const ones = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }hour > div > div.counter > div:nth-child(2) > div.opaque`))
 
       return tens + ones
     },
+  },
 
+  methods: {
     destinationMinute() {
+      console.log('hi')
+      console.log('theoretically via refs', this.$refs.destination.$refs.minute.$el.innerHTML)
+      console.log('idk what this is; is it the same?', this.$refs.destination.minute)
+      console.log(this.$refs.destination.$refs.minute === this.$refs.destination.minute)  // no
+
       const tens = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }minute > div > div.counter > div:nth-child(1) > div.opaque`))
       const ones = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }minute > div > div.counter > div:nth-child(2) > div.opaque`))
 
       return tens + ones
     },
-  },
 
-  methods: {
     getPresentTime() {
-      console.log(this.destinationMinute + '')
+      console.log(this.destinationMinute() + '')
       Object.assign(this.present, {
         hour: this.destinationHour,
-        minute: this.destinationMinute,
+        minute: this.destinationMinute(),
       })
     },
 
