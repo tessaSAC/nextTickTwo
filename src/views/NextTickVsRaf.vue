@@ -10,11 +10,9 @@ export default {
     watchedVal: true,
   }),
 
-  computed: {
-    boxPosLeft() { return this.$refs.box.getBoundingClientRect().left },
-  },
-
   methods: {
+    boxPosLeft() { return this.$refs.box.getBoundingClientRect().left },
+
     flipIt() { this.watchedVal = !this.watchedVal },
 
     flipWithNextTick() {
@@ -130,14 +128,14 @@ export default {
       for(let i = 0; i < 1000; ++i) {
         this.$nextTick(_ => {
           console.count('nextTick')
-          console.log(this.boxPosLeft)  // This shows the 1000px movement
+          console.log(this.boxPosLeft())  // This shows the 1000px movement
         })
       }
 
       this.$nextTick(_ => {
         console.log('second next tick')
         this.moveBox('500px')
-        console.log(this.boxPosLeft)
+        console.log(this.boxPosLeft())
       })
     },
 
