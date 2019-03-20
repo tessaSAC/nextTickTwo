@@ -12,30 +12,29 @@ export default {
 
   computed: {
     boxPosLeft() { return this.$refs.box.getBoundingClientRect().left },
-    watchedText() { return this.$refs.watchedValue.textContent },
   },
 
   methods: {
     flipIt() { this.watchedVal = !this.watchedVal },
 
     flipWithNextTick() {
-      this.output.unshift(`starting value: ${ this.watchedText }`)
+      this.output.unshift(`starting value: ${ this.watchedText() }`)
       this.promisedNextTick(_ => {
           this.flipIt()
           this.output.unshift(`nextTicked data value: ${ this.watchedVal }`)
       })
-      .then(_ => this.promisedRequestAnimationFrame(_ => this.output.unshift(`rAF DOM value: ${ this.watchedText }`)))
+      .then(_ => this.promisedRequestAnimationFrame(_ => this.output.unshift(`rAF DOM value: ${ this.watchedText() }`)))
       .then(_ => this.output.unshift('STAGE CLEAR 🏰'))
       .catch(console.error)
     },
 
     flipWithRaf() {
-      this.output.unshift(`starting value: ${ this.watchedText }`)
+      this.output.unshift(`starting value: ${ this.watchedText() }`)
       this.promisedRequestAnimationFrame(_ => {
         this.flipIt()
         this.output.unshift(`rAF data value: ${ this.watchedVal }`)
       })
-      .then(_ => this.promisedNextTick(_ => this.output.unshift(`nextTicked DOM value: ${ this.watchedText }`)))
+      .then(_ => this.promisedNextTick(_ => this.output.unshift(`nextTicked DOM value: ${ this.watchedText() }`)))
       .then(_ => this.output.unshift('STAGE CLEAR 🏰'))
       .catch(console.error)
     },
@@ -148,6 +147,8 @@ export default {
     },
 
     reset() { this.moveBox(0) },
+
+    watchedText() { return this.$refs.watchedValue.textContent },
   },
 }
 </script>

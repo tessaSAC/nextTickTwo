@@ -48,8 +48,11 @@ export default {
     // If this works I'll be annoyed because it worked both ways on NextTickVsRaf
     // It didn't work
     destinationHour() {
-      const tens = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }hour > div > div.counter > div:nth-child(1) > div.opaque`))
-      const ones = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }hour > div > div.counter > div:nth-child(2) > div.opaque`))
+      const tens = this.$refs.destination.$refs.minute.$refs.char[0].textContent
+      const ones = this.$refs.destination.$refs.minute.$refs.char[1].textContent  // this has the same issue where it only updates once
+      // '$refs are only populated after the component has been rendered, and they are not reactive. It is only meant as an escape hatch for direct child manipulation - you should avoid accessing $refs from within templates or computed properties.'
+      // So why does it work in NextTickVsRaf? Is it working? It does seem to be changing.....
+      // It doesn't work there anymore either (in methods). Agh....
 
       return tens + ones
     },
@@ -57,13 +60,16 @@ export default {
 
   methods: {
     destinationMinute() {
-      console.log('hi')
-      console.log('theoretically via refs', this.$refs.destination.$refs.minute.$el.innerHTML)
+      console.log('theoretically via refs', this.$refs.destination.$refs.minute)
       console.log('idk what this is; is it the same?', this.$refs.destination.minute)
       console.log(this.$refs.destination.$refs.minute === this.$refs.destination.minute)  // no
 
-      const tens = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }minute > div > div.counter > div:nth-child(1) > div.opaque`))
-      const ones = this.getInnerHtml(document.querySelector(`${ this.lcdCommonSelector }minute > div > div.counter > div:nth-child(2) > div.opaque`))
+      console.log('char via refs', this.$refs.destination.$refs.minute.$refs.char)
+      console.log('theoretically via refs', this.$refs.destination.$refs.minute.$refs.char[0].textContent)
+      console.log('theoretically via refs', this.$refs.destination.$refs.minute.$refs.char[1].textContent)
+
+      const tens = this.getTextContent(document.querySelector(`${ this.lcdCommonSelector }minute > div > div.counter > div:nth-child(1) > div.opaque`))
+      const ones = this.getTextContent(document.querySelector(`${ this.lcdCommonSelector }minute > div > div.counter > div:nth-child(2) > div.opaque`))
 
       return tens + ones
     },
@@ -76,7 +82,7 @@ export default {
       })
     },
 
-    getInnerHtml(node) {
+    getTextContent(node) {
       return node.textContent  // this doesn't reflect what's on the page!
     },
 

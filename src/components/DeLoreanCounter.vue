@@ -47,7 +47,7 @@ export default {
         0<span class="dot">.</span>
       </div>
 
-      <div class="opaque" :class="flip(char)">{{ char }}</div>
+      <div ref="char" class="opaque" :class="flip(char)">{{ char }}</div>
     </div>
   </div>
 </DeLoreanLabeledSlot>

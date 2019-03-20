@@ -71,6 +71,7 @@ export default {
       </div>
 
       <DeLoreanCounter
+        ref="hour"
         class="hour"
         :counterValue="hour"
         :counterColor="textColor"
