@@ -4351,6 +4351,8 @@ function callActivatedHooks (queue) {
  * pushed when the queue is being flushed.
  */
 function queueWatcher (watcher) {
+  // console.count('queueWatcher called')
+
   var id = watcher.id;
   if (has[id] == null) {
     has[id] = true;
@@ -4509,6 +4511,8 @@ Watcher.prototype.cleanupDeps = function cleanupDeps () {
  * Will be called when a dependency changes.
  */
 Watcher.prototype.update = function update () {
+  // console.count('Watcher.prototype.update called')
+
   /* istanbul ignore else */
   if (this.lazy) {
     this.dirty = true;

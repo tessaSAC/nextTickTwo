@@ -71,25 +71,25 @@ export default {
     },
 
     nextTickToRaf() {
-      // this.promisedNextTick(this.travel)
-      // .then(_ => this.promisedRequestAnimationFrame(this.setPresentTime))
-      // .catch(console.error)
+      this.promisedNextTick(this.travel)
+      .then(_ => this.promisedRequestAnimationFrame(this.setPresentTime))
+      .catch(console.error)
 
-      this.$nextTick(_ => {
-        this.travel()
-        window.requestAnimationFrame(this.setPresentTime)
-      })
+      // this.$nextTick(_ => {
+      //   this.travel()
+      //   window.requestAnimationFrame(this.setPresentTime)
+      // })
     },
 
     rafToNextTick() {
-      // this.promisedRequestAnimationFrame(this.travel)
-      // .then(_ => this.promisedNextTick(this.setPresentTime))
-      // .catch(console.error)
+      this.promisedRequestAnimationFrame(this.travel)
+      .then(_ => this.promisedNextTick(this.setPresentTime))
+      .catch(console.error)
 
-      window.requestAnimationFrame(_ => {
-        this.travel()
-        this.$nextTick(this.setPresentTime)
-      })
+      // window.requestAnimationFrame(_ => {
+      //   this.travel()
+      //   this.$nextTick(this.setPresentTime)
+      // })
     },
 
     travel({ hour, minute } = {}) {  // making destructured args optional, e.g. https://stackoverflow.com/a/53930370
