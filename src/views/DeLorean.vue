@@ -43,7 +43,14 @@ export default {
   }),
 
   methods: {
-    changeNonRenderedData() { this.$nextTick(_ => this.uselessParam = 'geiss') },  // flushes queue but doesn't trigger DOM patch
+    changeNonRenderedData() {
+      this.promisedNextTick(_ => this.uselessParam = 'geiss')  // flushes queue but doesn't trigger DOM patch
+      .then(_ => {
+        console.log('finsished nextTick phase')
+
+        window.requestAnimationFrame(_ => this.uselessParam = null)  // this also doesn't trigger DOM patch
+      })
+    },
 
     destinationHour() { return this.getPresentTime('hour') },
 
