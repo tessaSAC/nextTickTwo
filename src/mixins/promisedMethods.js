@@ -1,10 +1,14 @@
 export default {
   beforeCreate() {
-    const raf = window.requestAnimationFrame
+    if(!window.mutatedRaf) {  // prevent stacking console.logs every hot reload
+      const raf = window.requestAnimationFrame
 
-    window.requestAnimationFrame = function(args) {
-      console.log('requestAnimationFrame')
-      return raf(args)
+      window.requestAnimationFrame = function(args) {
+        console.log('requestAnimationFrame')
+        return raf(args)
+      }
+
+      window.mutatedRaf = true
     }
   },
 

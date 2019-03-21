@@ -38,18 +38,16 @@ export default {
       textColor: '#f8ef4f',
       labelText: 'time last departed',
     },
+
+    uselessParam: null,
   }),
 
   methods: {
+    changeNonRenderedData() { this.$nextTick(_ => this.uselessParam = 'geiss') },  // flushes queue but doesn't trigger DOM patch
+
     destinationHour() { return this.getPresentTime('hour') },
 
-    destinationMinute() {
-      console.log('theoretically via refs', this.$refs.destination.$refs.minute)
-      console.log('idk what this is; is it the same?', this.$refs.destination.minute)
-      console.log(this.$refs.destination.$refs.minute === this.$refs.destination.minute)  // no
-
-      return this.getPresentTime('minute')
-    },
+    destinationMinute() { return this.getPresentTime('minute') },
 
     getPresentTime(timeCounter) {
       const tens = (this.$refs.destination.$refs[timeCounter].$refs.char[0].textContent)
@@ -87,7 +85,13 @@ export default {
       })
     },
 
-    travel() { ++this.destination.minute },
+    travel({ hour, minute } = {}) {  // making destructured args optional, e.g. https://stackoverflow.com/a/53930370
+      this.departed = { ...this.present }
+
+      if(hour) this.destination.hour = hour
+      if(minute) this.destination.minute = minute
+      else ++this.destination.minute
+    },
   },
 }
 </script>
@@ -103,6 +107,7 @@ export default {
   <div class="controls">
     <DeLoreanButton @click="nextTickToRaf">nextTick</DeLoreanButton>
     <DeLoreanButton @click="rafToNextTick">rAF</DeLoreanButton>
+    <DeLoreanButton @click="changeNonRenderedData">!rerender</DeLoreanButton>
   </div>
 </div>
 </template>
