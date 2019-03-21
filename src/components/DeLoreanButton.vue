@@ -10,10 +10,10 @@
 <style lang="scss">
 .DeLoreanButton {
   border-radius: 50px;
-  border: 1px solid #$orange;
+  border: 1px solid $orange;
   background: transparent;
   padding: 0.4rem 0.8rem 0.3rem;
-  color: #$orange;
+  color: $orange;
   font-family: Syncopate;
   font-size: 1.2rem;
   text-transform: uppercase;

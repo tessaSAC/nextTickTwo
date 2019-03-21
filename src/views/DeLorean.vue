@@ -127,5 +127,7 @@ export default {
       margin-top: 0.2rem;
     }
   }
+
+  .DeLoreanButton + .DeLoreanButton { margin-left: 1vw; }
 }
 </style>
