@@ -80,6 +80,7 @@ export default {
       this.moveBox('1000px')
       // debugger  // this one moves too
       this.$nextTick(_ => {
+        console.log('nextTick callback');
         this.moveBox('500px')
       })
     },

@@ -71,25 +71,63 @@ export default {
     },
 
     nextTickToRaf() {
-      this.promisedNextTick(this.travel)
-      .then(_ => this.promisedRequestAnimationFrame(this.setPresentTime))
-      .catch(console.error)
+      // Synchronous nextTicks
+      // this.promisedNextTick(this.travel)
+      // .then(_ => this.promisedRequestAnimationFrame(this.setPresentTime))
+      // .catch(console.error)
 
+      // Asynchronous nextTicks
       // this.$nextTick(_ => {
       //   this.travel()
       //   window.requestAnimationFrame(this.setPresentTime)
       // })
+
+      // Trying to make it into the same queue flush phase
+      this.$nextTick(_ => {
+        this.$nextTick(_ => {
+          console.log('nextTickToRaf 01: did I make it into the same queue?')
+
+          this.$nextTick(_ => {
+            console.log('nextTickToRaf 02: how about me?')
+            this.travel()
+            console.log('nextTickToRaf 03: and me')
+            window.requestAnimationFrame(this.setPresentTime)
+            console.log('nextTickToRaf 04: and me')
+          })
+        })
+      })
     },
 
     rafToNextTick() {
-      this.promisedRequestAnimationFrame(this.travel)
-      .then(_ => this.promisedNextTick(this.setPresentTime))
-      .catch(console.error)
+      // Synchronous rAFs
+      // this.promisedRequestAnimationFrame(this.travel)
+      // .then(_ => this.promisedNextTick(this.setPresentTime))
+      // .catch(console.error)
 
+      // Asynchronous rAFs
       // window.requestAnimationFrame(_ => {
       //   this.travel()
       //   this.$nextTick(this.setPresentTime)
       // })
+
+
+      // Trying to make it into the same queue flush phase
+      window.requestAnimationFrame(_ => {
+        window.requestAnimationFrame(_ => {
+          console.log('rafToNextTick 01: did I make it into the same queue?')
+
+          window.requestAnimationFrame(_ => {
+            console.log('rafToNextTick 02: how about me?')
+            this.travel()
+            console.log('rafToNextTick 03: and me')
+            this.$nextTick(this.setPresentTime)
+            console.log('rafToNextTick 04: and me')  // these all print as the cbs get pushed
+
+            // theory: this one will print inside the first flushQueue call:
+            this.$nextTick(_ => console.log('rafToNextTick 05: inside $nextTick'))
+          })
+        })
+      })
     },
 
     travel({ hour, minute } = {}) {  // making destructured args optional, e.g. https://stackoverflow.com/a/53930370

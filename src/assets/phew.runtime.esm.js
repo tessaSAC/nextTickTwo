@@ -1981,6 +1981,7 @@ function nextTick (cb, ctx) {
 
   var _resolve;
   callbacks.push(function () {
+    for(let i = 0; i < 1000; ++i) { console.log('bullet time') }
     if (cb) {
       try {
         cb.call(ctx);
