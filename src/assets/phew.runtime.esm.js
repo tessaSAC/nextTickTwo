@@ -4352,14 +4352,11 @@ function callActivatedHooks (queue) {
  * pushed when the queue is being flushed.
  */
 function queueWatcher (watcher) {
-  // console.count('queueWatcher called')
-
   var id = watcher.id;
+  console.log('id', id, has[id])  // adds watcher id to `has` on first update call
   if (has[id] == null) {
     has[id] = true;
-    console.log('id', id)  // these don't even get called by the second $nextTick
     if (!flushing) {
-      console.log('flushing', flushing)
       queue.push(watcher);
     } else {
       console.log('splicing', id)
@@ -4373,8 +4370,6 @@ function queueWatcher (watcher) {
     }
     // queue the flush
     if (!waiting) {
-      console.warn('add rerender to next nextTick queue')
-
       waiting = true;
 
       if (process.env.NODE_ENV !== 'production' && !config.async) {
