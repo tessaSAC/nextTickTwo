@@ -44,6 +44,40 @@ export default {
   }),
 
   methods: {
+    alternateRafNextTick() {
+      this.$nextTick(_ => {
+        console.log('NT 1')
+        window.requestAnimationFrame(_ => {
+          console.log('NT 1 >> rAF')
+          this.$nextTick(_ => console.log('NT 1 >> rAF >> END'))
+        })
+      })
+
+      window.requestAnimationFrame(_ => {
+        console.log('rAF 1')
+        this.$nextTick(_ => {
+          console.log('rAF 1 >> NT')
+          window.requestAnimationFrame(_ => console.log('rAF 1 >> NT >> END'))
+        })
+      })
+
+      this.$nextTick(_ => {
+        console.log('NT 2')
+        window.requestAnimationFrame(_ => {
+          console.log('NT 2 >> rAF')
+          this.$nextTick(_ => console.log('NT 2 >> rAF >> END'))
+        })
+      })
+
+      window.requestAnimationFrame(_ => {
+        console.log('rAF 2')
+        this.$nextTick(_ => {
+          console.log('rAF 2 >> NT')
+          window.requestAnimationFrame(_ => console.log('rAF 2 >> NT >> END'))
+        })
+      })
+    },
+
     changeNonRenderedData() {
       console.log('nonDep func running')
       // this.promisedNextTick(_ => this.uselessParam = 'geiss')  // flushes queue but doesn't trigger DOM patch
@@ -237,6 +271,41 @@ export default {
       })
     },
 
+    sneetchRafNextTick() {
+      this.$nextTick(_ => {
+        console.log('NT 1')
+        this.$nextTick(_ => {
+          console.log('NT 1.2')
+          this.$nextTick(_ => console.log('NT 1.3'))
+        })
+      })
+
+      this.$nextTick(_ => {
+        console.log('NT 2')
+        this.$nextTick(_ => {
+          console.log('NT 2.2')
+          this.$nextTick(_ => console.log('NT 2.3'))
+        })
+      })
+
+      window.requestAnimationFrame(_ => {
+        console.log('rAF 1')
+        window.requestAnimationFrame(_ => {
+          console.log('rAF 1.2')
+          window.requestAnimationFrame(_ => console.log('rAF 1.3'))
+        })
+      })
+
+      window.requestAnimationFrame(_ => {
+        console.log('rAF 2')
+        window.requestAnimationFrame(_ => {
+          console.log('rAF 2.2')
+          window.requestAnimationFrame(_ => console.log('rAF 2.3'))
+        })
+      })
+
+    },
+
     travel({ hour, minute, } = {}) {  // making destructured args optional, e.g. https://stackoverflow.com/a/53930370
       console.log('travel running')
       this.departed = { ...this.present, }
@@ -262,6 +331,8 @@ export default {
     <DeLoreanButton @click="rafToNextTick">rAF</DeLoreanButton>
     <DeLoreanButton @click="changeNonRenderedData">!rerender</DeLoreanButton>
     <DeLoreanButton @click="interceptQueue">MI:Vue</DeLoreanButton>
+    <DeLoreanButton @click="alternateRafNextTick">alternate</DeLoreanButton>
+    <DeLoreanButton @click="sneetchRafNextTick">sneetch it</DeLoreanButton>
   </div>
 </div>
 </template>

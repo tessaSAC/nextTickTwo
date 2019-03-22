@@ -1900,14 +1900,14 @@ var callbacks = [];
 var pending = false;
 
 function flushCallbacks () {
-  console.log('flushing callbacks')
+  console.error('flushing callbacks')
   pending = false;
   var copies = callbacks.slice(0);
   callbacks.length = 0;
   for (var i = 0; i < copies.length; i++) {
     copies[i]();
   }
-  console.log('done flushing callbacks')
+  console.error('done flushing callbacks')
 }
 
 // Here we have async deferring wrappers using microtasks.
