@@ -90,29 +90,61 @@ export default {
 
     interceptQueue() {
       // Because behavior is different when not deeply nested as in rafToNextTick
-      this.$nextTick(_ => {
-        console.log('interceptQueue: running $nextTick')  // flush 01
-        this.setImmediate(_ => { console.log('this.$nextTick(setImmediate)') }, (0))  // after final flush
+      // this.$nextTick(_ => {
+        // console.log('interceptQueue: running $nextTick')  // flush 01
+        // this.setImmediate(_ => { console.log('this.$nextTick(setImmediate)') }, (0))  // after final flush
 
-        this.setImmediate(this.$nextTick(_ => console.log('this.$nextTick(setImmediate(this.$nextTick))')))  // flush 02
-        this.setTimeout(_ => console.log('in setTimeout'), 0)  // after final flush
 
-        this.$nextTick(_ => console.log('INNER $NEXTTICK'))  // flush 02
-        this.$nextTick(_ => this.prom().then(_ => console.log('nested this.$nextTick => Promise.then')))  // after final flush?
-        this.$nextTick(_ => this.$nextTick(this.$nextTick))  // let's see...
+        // TODO: THIS WAS NOT A CALLBACK WTF WAS HAPPENING HERE???
+        // => the output gets pushed into the last callback when running e.g. the triple nextTick with this
+        // this.setImmediate(_ => this.$nextTick(_ => console.log('this.$nextTick(setImmediate(this.$nextTick))')))  // final flush
 
-        this.prom().then(_ => console.log('Promise.then'))  // after final flush before prev. line maybe bc it gets into microtask queue one step faster?
-      })
+        // this.$nextTick(_ => this.$nextTick(_ => console.log('will this go in the second flush queue?')))  // flush 03
+        // went in the third which makes sense bc this is triple-nested
 
-      this.setImmediate(_ => { console.log('in setImmediate') }, (0))  // after final
-      this.setImmediate(this.$nextTick(_ => console.log('setImmediate(this.$nextTick)')))  // INSIDE flush 01?!??
+        // will this go with or in a different spot than Immediate?
+        // this.setTimeout(_ => this.$nextTick(_ => console.log('this.$nextTick(setTimeout(this.$nextTick))')))  // a flush after setImmediate
+
+        // this.$nextTick(_ => this.$nextTick(_ => this.$nextTick(_ => console.log('will this change the sI/sT counts?'))))
+        // Yes it pushes them down one further
+
+        // this.setTimeout(_ => console.log('in setTimeout'), 0)  // after final flush
+
+        // this.$nextTick(_ => console.log('INNER $NEXTTICK'))  // flush 02
+        // this.$nextTick(_ => this.prom().then(_ => console.log('nested this.$nextTick => Promise.then')))  // after final flush?
+        // this.$nextTick(_ => this.$nextTick(this.$nextTick))  // let's see...
+
+        // this.prom().then(_ => console.log('Promise.then'))  // after final flush before prev. line maybe bc it gets into microtask queue one step faster?
+      // })
+
+      // this.setImmediate(_ => { console.log('in setImmediate') }, (0))  // after final
+
+      // // TODO: THIS WAS NOT A CALLBACK WTF WAS HAPPENING HERE???
+      // this.setImmediate(_ => this.$nextTick(_ => console.log('setImmediate(this.$nextTick)')))  // this gets pushed to a later queue
+
+      // Does setImmediate come before setTimeout reliably?
+      this.setTimeout(_ => this.$nextTick(console.log('setTimeout 1')), 0)
+      this.setImmediate(_ => this.$nextTick(console.log('setImmediate 1')))
+      this.setTimeout(_ => this.$nextTick(console.log('setTimeout 2')), 0)
+      this.setImmediate(_ => this.$nextTick(console.log('setImmediate 2')))
+      this.setTimeout(_ => this.$nextTick(console.log('setTimeout 3')), 0)
+      this.setImmediate(_ => this.$nextTick(console.log('setImmediate 3')))
+      this.setTimeout(_ => this.$nextTick(console.log('setTimeout 4')), 0)
+      this.setImmediate(_ => this.$nextTick(console.log('setImmediate 4')))
+      // Seems to (tried running 3x) and also fsr setImmediate prints each flush one at a time while setTimeout prints all 4 at once
+      // Is it because I didn't pass a time to setTimeout fml
+      // => NO
+
+      // According to the setImmediate repo https://github.com/yuzujs/setImmediate (by omission) this is using setTimeout in Chrome so idky the timing would be any different??????
+
 
       // CONCLUSIONS:
       // 1. timers run after flushes 👌
       // 2. nextTick runs during flushes
       //    output goes... (task) ? after flushes : in next flush
       // 3. promise inside flushQueue is treated as a t̶a̶s̶k̶(̶!̶?̶)̶ normal non-nextTick microtask
-      // 4. nextTick called by timer runs BEFOR timer(!?)
+      // 4. I was very off and also misspelled 'before'
+      //  a. timer functions with nextTick will go into a later queue than nextTick with nextTick
     },
 
     nextTickToRaf() {
@@ -180,7 +212,9 @@ export default {
             this.$nextTick(_ => {
               console.log('rafToNextTick 06: inside $nextTick before timeout')
               setImmediate(_ => { console.log('in timeout') }, (0))  // whether long or short, setImmediate or setTimeout, as a task it doesn't make it into the current queue
-              setImmediate(this.$nextTick(_ => console.log('go in current queue?')))  // what if I schedule a microtask?
+
+              // TODO: THIS WAS NOT A CALLBACK WTF WAS HAPPENING HERE???
+              setImmediate(_ => this.$nextTick(_ => console.log('go in current queue?')))  // what if I schedule a microtask?
               // This goes into the next queue
 
               // If I nest nextTicks will they go into the same or different flushed queues?
