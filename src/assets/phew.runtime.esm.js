@@ -1975,13 +1975,13 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   };
 }
 
-function nextTick (cb, ctx) {
-  console.warn('nextTick')
+function nextTick (cb, ctx, pushedByVue) {
+  if(pushedByVue) console.warn('nextTick pushed by Vue')
   if(window.pulley) window.pulley.push([])
 
   var _resolve;
   callbacks.push(function () {
-    for(let i = 0; i < 1000; ++i) { console.log('bullet time') }
+    // for(let i = 0; i < 1000; ++i) { console.log('bullet time') }
     if (cb) {
       try {
         cb.call(ctx);
@@ -3513,7 +3513,7 @@ function renderMixin (Vue) {
   installRenderHelpers(Vue.prototype);
 
   Vue.prototype.$nextTick = function (fn) {
-    console.warn('💲nextTick 🤑🤑🤑')
+    console.warn('💲nextTick 🤑🤑🤑 pushed')
 
     return nextTick(fn, this)
   };
@@ -4357,9 +4357,12 @@ function queueWatcher (watcher) {
   var id = watcher.id;
   if (has[id] == null) {
     has[id] = true;
+    console.log('id', id)  // these don't even get called by the second $nextTick
     if (!flushing) {
+      console.log('flushing', flushing)
       queue.push(watcher);
     } else {
+      console.log('splicing', id)
       // if already flushing, splice the watcher based on its id
       // if already past its id, it will be run next immediately.
       var i = queue.length - 1;
@@ -4370,13 +4373,15 @@ function queueWatcher (watcher) {
     }
     // queue the flush
     if (!waiting) {
+      console.warn('add rerender to next nextTick queue')
+
       waiting = true;
 
       if (process.env.NODE_ENV !== 'production' && !config.async) {
         flushSchedulerQueue();
         return
       }
-      nextTick(flushSchedulerQueue);
+      nextTick(flushSchedulerQueue, undefined, true);
     }
   }
 }

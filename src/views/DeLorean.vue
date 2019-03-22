@@ -101,6 +101,7 @@ export default {
     },
 
     setPresentTime() {
+      console.log('setting present time')
       Object.assign(this.present, {
         hour: this.destinationHour(),
         minute: this.destinationMinute(),
@@ -303,7 +304,48 @@ export default {
           window.requestAnimationFrame(_ => console.log('rAF 2.3'))
         })
       })
+    },
 
+    sneetchWithVisuals() {
+      this.$nextTick(_ => {
+        console.log('NT 1')
+        this.travel()
+
+        this.$nextTick(_ => {
+          console.log('NT 1.2')
+          this.setPresentTime()
+        })
+      })
+
+      this.$nextTick(_ => {
+        console.log('NT 2')
+        this.travel()
+
+        this.$nextTick(_ => {
+          console.log('NT 2.2')
+          this.setPresentTime()
+        })
+      })
+
+      // window.requestAnimationFrame(_ => {
+      //   console.log('rAF 1')
+      //   this.travel()
+
+      //   window.requestAnimationFrame(_ => {
+      //     console.log('rAF 1.2')
+      //     this.setPresentTime()
+      //   })
+      // })
+
+      // window.requestAnimationFrame(_ => {
+      //   console.log('rAF 2')
+      //   this.travel()
+
+      //   window.requestAnimationFrame(_ => {
+      //     console.log('rAF 2.2')
+      //     this.setPresentTime()
+      //   })
+      // })
     },
 
     travel({ hour, minute, } = {}) {  // making destructured args optional, e.g. https://stackoverflow.com/a/53930370
@@ -333,6 +375,7 @@ export default {
     <DeLoreanButton @click="interceptQueue">MI:Vue</DeLoreanButton>
     <DeLoreanButton @click="alternateRafNextTick">alternate</DeLoreanButton>
     <DeLoreanButton @click="sneetchRafNextTick">sneetch it</DeLoreanButton>
+    <DeLoreanButton @click="sneetchWithVisuals">snee it</DeLoreanButton>
   </div>
 </div>
 </template>
