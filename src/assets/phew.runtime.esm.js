@@ -1963,7 +1963,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   isUsingMicroTask = true;
 } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   // Fallback to setImmediate.
-  // Techinically it leverages the (macro) task queue,
+  // Technically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
   timerFunc = function () {
     setImmediate(flushCallbacks);
@@ -4353,13 +4353,13 @@ function callActivatedHooks (queue) {
  */
 function queueWatcher (watcher) {
   var id = watcher.id;
-  console.log('id', id, has[id])  // adds watcher id to `has` on first update call
+
+  // NB: Even if the same component triggers multiple updates its watcher won't make another call to flush
   if (has[id] == null) {
-    has[id] = true;
+    has[id] = true;  // NB: Adds watcher id to `has` on first update call
     if (!flushing) {
       queue.push(watcher);
     } else {
-      console.log('splicing', id)
       // if already flushing, splice the watcher based on its id
       // if already past its id, it will be run next immediately.
       var i = queue.length - 1;
@@ -4376,7 +4376,7 @@ function queueWatcher (watcher) {
         flushSchedulerQueue();
         return
       }
-      nextTick(flushSchedulerQueue, undefined, true);
+      nextTick(flushSchedulerQueue, undefined, true);  // NB: Passing a "pushed by Vue" var to `flushSchedulerQueue`
     }
   }
 }
@@ -6461,6 +6461,7 @@ function createPatchFunction (backend) {
       var isRealElement = isDef(oldVnode.nodeType);
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
         // patch existing root node
+        // NB: This is what gets called on each updated component piece
         patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly);
       } else {
         if (isRealElement) {

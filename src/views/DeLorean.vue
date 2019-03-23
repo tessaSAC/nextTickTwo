@@ -327,25 +327,76 @@ export default {
         })
       })
 
-      // window.requestAnimationFrame(_ => {
-      //   console.log('rAF 1')
-      //   this.travel()
+      window.requestAnimationFrame(_ => {
+        console.log('rAF 1')
+        this.travel()
 
-      //   window.requestAnimationFrame(_ => {
-      //     console.log('rAF 1.2')
-      //     this.setPresentTime()
-      //   })
-      // })
+        window.requestAnimationFrame(_ => {
+          console.log('rAF 1.2')
+          this.setPresentTime()
+        })
+      })
 
-      // window.requestAnimationFrame(_ => {
-      //   console.log('rAF 2')
-      //   this.travel()
+      window.requestAnimationFrame(_ => {
+        console.log('rAF 2')
+        this.travel()
 
-      //   window.requestAnimationFrame(_ => {
-      //     console.log('rAF 2.2')
-      //     this.setPresentTime()
-      //   })
-      // })
+        window.requestAnimationFrame(_ => {
+          console.log('rAF 2.2')
+          this.setPresentTime()
+        })
+      })
+    },
+
+    sneetchWithVisualsPromised() {
+      this.promisedNextTick(_ => {
+        console.log('NT 1')
+        this.travel()
+      })
+      .then(_ => {
+        return this.promisedNextTick(_ => {
+          console.log('NT 1.2')
+          this.setPresentTime()
+        })
+      })
+      .then(_ => console.log('$nT done 1'))
+
+      this.promisedNextTick(_ => {
+        console.log('NT 2')
+        this.travel()
+      })
+      .then(_ => {
+        return this.promisedNextTick(_ => {
+          console.log('NT 2.2')
+          this.setPresentTime()
+        })
+      })
+      .then(_ => console.log('$nT done 2'))
+
+      this.promisedRequestAnimationFrame(_ => {
+        console.log('rAF 1')
+        this.travel()
+      })
+      .then(_ => {
+        return this.promisedRequestAnimationFrame(_ => {
+          console.log('rAF 1.2')
+          this.setPresentTime()
+        })
+      })
+      .then(_ => console.log('rAFdone 1'))
+
+      this.promisedRequestAnimationFrame(_ => {
+        console.log('rAF 2')
+        this.travel()
+      })
+      .then(_ => {
+        return this.promisedRequestAnimationFrame(_ => {
+          console.log('rAF 2.2')
+          debugger
+          this.setPresentTime()
+        })
+      })
+      .then(_ => console.log('rAFdone 2'))
     },
 
     travel({ hour, minute, } = {}) {  // making destructured args optional, e.g. https://stackoverflow.com/a/53930370
@@ -376,6 +427,7 @@ export default {
     <DeLoreanButton @click="alternateRafNextTick">alternate</DeLoreanButton>
     <DeLoreanButton @click="sneetchRafNextTick">sneetch it</DeLoreanButton>
     <DeLoreanButton @click="sneetchWithVisuals">snee it</DeLoreanButton>
+    <DeLoreanButton @click="sneetchWithVisualsPromised">promise snee</DeLoreanButton>
   </div>
 </div>
 </template>
