@@ -1901,7 +1901,7 @@ var pending = false;
 
 function flushCallbacks () {
   console.error('flushing callbacks')
-  // if(window.timeline) window.timeline.push({ char: '{', type: 'flush' })
+  if(window.timeline) window.timeline.push({ char: '{', type: 'flush' })
 
   pending = false;
   var copies = callbacks.slice(0);
@@ -1910,7 +1910,7 @@ function flushCallbacks () {
     copies[i]();
   }
   console.error('done flushing callbacks')
-  // if(window.timeline) window.timeline.push({ char: '}', type: 'flush' })
+  // if(window.timeline) window.timeline.push({ char: '}', type: 'flush' }  // this causes infinite loop bc it causes rerender...
 }
 
 // Here we have async deferring wrappers using microtasks.
@@ -3524,13 +3524,14 @@ function renderMixin (Vue) {
     console.warn('💲nextTick 🤑🤑🤑 pushed')
     if(window.timeline) window.timeline.push({ char: 'push($)', type: 'push' })
 
-    const fnTimelined = (...args) => {
-      if(window.timeline) window.timeline.push({ char: '$()', type: '$' })
-      if(fn) return fn(...args)
-      else return Promise.resolve(this)
-    }
+    //  NB: Do this in component instead
+    // const fnTimelined = (...args) => {
+    //   if(window.timeline) window.timeline.push({ char: '$()', type: '$' })
+    //   if(fn) return fn(...args)
+    //   else return Promise.resolve(this)
+    // }
 
-    return nextTick(fnTimelined, this)
+    return nextTick(fn, this)
   };
 
   Vue.prototype._render = function () {
