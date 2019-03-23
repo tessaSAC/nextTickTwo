@@ -1901,6 +1901,8 @@ var pending = false;
 
 function flushCallbacks () {
   console.error('flushing callbacks')
+  // if(window.timeline) window.timeline.push({ char: '{', type: 'flush' })
+
   pending = false;
   var copies = callbacks.slice(0);
   callbacks.length = 0;
@@ -1908,6 +1910,7 @@ function flushCallbacks () {
     copies[i]();
   }
   console.error('done flushing callbacks')
+  // if(window.timeline) window.timeline.push({ char: '}', type: 'flush' })
 }
 
 // Here we have async deferring wrappers using microtasks.
@@ -1976,13 +1979,18 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 }
 
 function nextTick (cb, ctx, pushedByVue) {
-  if(pushedByVue) console.warn('nextTick pushed by Vue')
+  if(pushedByVue) {
+    console.warn('nextTick pushed by Vue')
+    if(window.timeline) window.timeline.push({ char: 'p(nT)', type: 'push' })
+  }
+
   if(window.pulley) window.pulley.push([])
 
   var _resolve;
   callbacks.push(function () {
     // for(let i = 0; i < 1000; ++i) { console.log('bullet time') }
     if (cb) {
+      if(window.timeline && pushedByVue) window.timeline.push({ char: 'nT()', type: 'nT' })
       try {
         cb.call(ctx);
       } catch (e) {
@@ -3514,8 +3522,15 @@ function renderMixin (Vue) {
 
   Vue.prototype.$nextTick = function (fn) {
     console.warn('💲nextTick 🤑🤑🤑 pushed')
+    if(window.timeline) window.timeline.push({ char: 'push($)', type: 'push' })
 
-    return nextTick(fn, this)
+    const fnTimelined = (...args) => {
+      if(window.timeline) window.timeline.push({ char: '$()', type: '$' })
+      if(fn) return fn(...args)
+      else return Promise.resolve(this)
+    }
+
+    return nextTick(fnTimelined, this)
   };
 
   Vue.prototype._render = function () {

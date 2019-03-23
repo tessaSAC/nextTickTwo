@@ -18,6 +18,10 @@ export default new Router({
       path: '/delorean',
       name: 'delorean',
       component: () => import(/* webpackChunkName: "delorean" */ './views/DeLorean.vue'),
+    }, {
+      path: '/vueconfus2k19',
+      name: 'vueconfus2k19',
+      component: () => import(/* webpackChunkName: "delorean" */ './views/DeLoreanDemo.vue'),
     },
   ],
 })
