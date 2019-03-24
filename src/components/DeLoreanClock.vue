@@ -44,39 +44,39 @@ export default {
     labelText: String,
   },
 
-  data: _ => ({
-    blinkerColor: null,
-    start: new Date().getTime(),
-  }),
+  // data: _ => ({
+  //   blinkerColor: null,
+  //   start: new Date().getTime(),
+  // }),
 
-  created() { this.requestInterval(this.blink, 300) },
+  // created() { this.requestInterval(this.blink, 300) },
 
-  methods: {
-    blink() {
-      this.blinkerColor  = this.blinkerColor ? null : this.ledColor
-    },
+  // methods: {
+  //   blink() {
+  //     this.blinkerColor  = this.blinkerColor ? null : this.ledColor
+  //   },
 
-    // https://gist.github.com/joelambert/1002116
-    requestInterval(fn, delay) {
-      this.start = new Date().getTime()
-      const handle = new Object();
+  //   // https://gist.github.com/joelambert/1002116
+  //   requestInterval(fn, delay) {
+  //     this.start = new Date().getTime()
+  //     const handle = new Object();
 
-      function loop() {
-        const current = new Date().getTime(),
-          delta = current - this.start;
+  //     function loop() {
+  //       const current = new Date().getTime(),
+  //         delta = current - this.start;
 
-        if(delta >= delay) {
-          fn.call();
-          this.start = new Date().getTime();
-        }
+  //       if(delta >= delay) {
+  //         fn.call();
+  //         this.start = new Date().getTime();
+  //       }
 
-        handle.value = window.requestAnimationFrame(loop);
-      };
+  //       handle.value = window.requestAnimationFrame(loop);
+  //     };
 
-      handle.value = window.requestAnimationFrame(loop);
-      return handle;
-    },
-  },
+  //     handle.value = window.requestAnimationFrame(loop);
+  //     return handle;
+  //   },
+  // },
 }
 </script>
 
@@ -115,7 +115,7 @@ export default {
         <DeLoreanLed
           v-for="num in 2"
           :key="num"
-          :color="blinkerColor"
+          :color="ledColor"
         />
       </div>
 

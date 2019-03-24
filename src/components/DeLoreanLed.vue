@@ -15,6 +15,8 @@ export default {
 
 <style lang="scss">
 .DeLoreanLed {
+  z-index: 1;
+
   .led {
       width: 0.6rem;
       height: 0.6rem;

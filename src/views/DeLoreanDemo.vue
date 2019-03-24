@@ -53,13 +53,21 @@ export default {
   },
 
   created() {
-    window.timeline = this.timeline
+    // TODO: Move to mixin
+    // window.timeline = this.timeline
 
-    const rAF = window.requestAnimationFrame
-    window.requestAnimationFrame = (...args) => {
-      this.timeline.push({ char: 'p(r)', type: 'push', })
-      rAF(...args)
-    }
+    // const rAF = window.requestAnimationFrame
+    // window.requestAnimationFrame = (...args) => {
+    //   this.timeline.push({ char: 'p(r)', type: 'push', })
+    //   rAF(...args)
+    // }
+
+    // TODO: Move to mixin
+    const sI = setImmediate
+    // setImmediate = args => {
+    //   console.log('setImmediate')
+    //   sI(args)
+    // }
   },
 
   methods: {
@@ -97,6 +105,16 @@ export default {
       return tens + ones
     },
 
+    setImmediate(fn) {
+      console.log('pushing setImmediate')
+
+      const func = function(...args) {
+        console.log('sI()')
+        fn(...args)
+      }
+      setImmediate(func)
+    },
+
     setPresentTime() {
       Object.assign(this.present, {
         hour: this.destinationHour(),
@@ -121,10 +139,10 @@ export default {
     // },
 
     // // consecutive $nextTick
-    // floorIt() {
-    //   this.promisedNextTick(this.travel())
-    //   .then(_ => this.$nextTick(this.setPresentTime))
-    // },
+    floorIt() {
+      this.promisedNextTick(this.travel)
+      .then(_ => this.$nextTick(this.setPresentTime))
+    },
 
     // nested $nextTick
     // floorIt() {
@@ -136,19 +154,19 @@ export default {
 
     // $nextTick and rAF
     // floorIt() {
-    //   this.$nextTick(_ => {
-    //     this.travel()
-    //     this.requestAnimationFrame(this.setPresentTime)
-    //   })
+      // this.$nextTick(_ => {
+      //   this.travel()
+      //   window.requestAnimationFrame(this.setPresentTime)
+      // })
     // },
 
     // $nextTick and setImmediate
-    floorIt() {
-      this.$nextTick(_ => {
-        this.travel()
-        setImmediate(this.setPresentTime)
-      })
-    },
+    // floorIt() {
+    //   this.$nextTick(_ => {
+    //     this.travel()
+    //     this.setImmediate(this.setPresentTime)
+    //   })
+    // },
   },
 }
 </script>
