@@ -125,37 +125,37 @@ export default {
 
     interceptQueue() {
       // Because behavior is different when not deeply nested as in rafToNextTick
-      // this.$nextTick(_ => {
-        // console.log('interceptQueue: running $nextTick')  // flush 01
-        // this.setImmediate(_ => { console.log('this.$nextTick(setImmediate)') }, (0))  // after final flush
+      this.$nextTick(_ => {
+        console.log('interceptQueue: running $nextTick')  // flush 01
+        this.setTimeout(_ => { console.log('this.$nextTick(setImmediate)') }, (0))  // after final flush
 
 
         // TODO: THIS WAS NOT A CALLBACK WTF WAS HAPPENING HERE???
         // => the output gets pushed into the last callback when running e.g. the triple nextTick with this
-        // this.setImmediate(_ => this.$nextTick(_ => console.log('this.$nextTick(setImmediate(this.$nextTick))')))  // final flush
+        this.setImmediate(_ => this.$nextTick(_ => console.log('this.$nextTick(setImmediate(this.$nextTick))')))  // final flush
 
-        // this.$nextTick(_ => this.$nextTick(_ => console.log('will this go in the second flush queue?')))  // flush 03
+        this.$nextTick(_ => this.$nextTick(_ => console.log('will this go in the second flush queue?')))  // flush 03
         // went in the third which makes sense bc this is triple-nested
 
         // will this go with or in a different spot than Immediate?
-        // this.setTimeout(_ => this.$nextTick(_ => console.log('this.$nextTick(setTimeout(this.$nextTick))')))  // a flush after setImmediate
+        this.setTimeout(_ => this.$nextTick(_ => console.log('this.$nextTick(setTimeout(this.$nextTick))')))  // a flush after setImmediate
 
-        // this.$nextTick(_ => this.$nextTick(_ => this.$nextTick(_ => console.log('will this change the sI/sT counts?'))))
+        this.$nextTick(_ => this.$nextTick(_ => this.$nextTick(_ => console.log('will this change the sI/sT counts?'))))
         // Yes it pushes them down one further
 
-        // this.setTimeout(_ => console.log('in setTimeout'), 0)  // after final flush
+        this.setTimeout(_ => console.log('in setTimeout'), 0)  // after final flush
 
-        // this.$nextTick(_ => console.log('INNER $NEXTTICK'))  // flush 02
-        // this.$nextTick(_ => this.prom().then(_ => console.log('nested this.$nextTick => Promise.then')))  // after final flush?
-        // this.$nextTick(_ => this.$nextTick(this.$nextTick))  // let's see...
+        this.$nextTick(_ => console.log('INNER $NEXTTICK'))  // flush 02
+        this.$nextTick(_ => this.prom().then(_ => console.log('nested this.$nextTick => Promise.then')))  // after final flush?
+        this.$nextTick(_ => this.$nextTick(this.$nextTick))  // let's see...
 
-        // this.prom().then(_ => console.log('Promise.then'))  // after final flush before prev. line maybe bc it gets into microtask queue one step faster?
-      // })
+        this.prom().then(_ => console.log('Promise.then'))  // after final flush before prev. line maybe bc it gets into microtask queue one step faster?
+      })
 
-      // this.setImmediate(_ => { console.log('in setImmediate') }, (0))  // after final
+      this.setImmediate(_ => { console.log('in setImmediate') }, (0))  // after final
 
       // // TODO: THIS WAS NOT A CALLBACK WTF WAS HAPPENING HERE???
-      // this.setImmediate(_ => this.$nextTick(_ => console.log('setImmediate(this.$nextTick)')))  // this gets pushed to a later queue
+      this.setImmediate(_ => this.$nextTick(_ => console.log('setImmediate(this.$nextTick)')))  // this gets pushed to a later queue
 
       // Does setImmediate come before setTimeout reliably?
       this.setTimeout(_ => this.$nextTick(console.log('setTimeout 1')), 0)
@@ -178,8 +178,7 @@ export default {
       // 2. nextTick runs during flushes
       //    output goes... (task) ? after flushes : in next flush
       // 3. promise inside flushQueue is treated as a t̶a̶s̶k̶(̶!̶?̶)̶ normal non-nextTick microtask
-      // 4. I was very off and also misspelled 'before'
-      //  a. timer functions with nextTick will go into a later queue than nextTick with nextTick
+      // 4. timer functions with nextTick will go into a later queue than nextTick with nextTick
     },
 
     nextTickToRaf() {

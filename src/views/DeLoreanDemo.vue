@@ -76,6 +76,7 @@ export default {
         case 'task': return '#e06b2a'
         case 'flush': return '#f3c446'
         case 'microtask': return '#2766a4'
+        case 'promise': return '#ba7bccff'
         case '$': return '#FCD1E1'
         case 'nT': return '#e16ba0ff'
         case 'rAF': return '#e6ac6fff'
@@ -83,12 +84,69 @@ export default {
       }
     },
 
-    pushTimer() {  this.timeline.push({ char: 'push(⏱)', type: 'timer', }) },
-    pushPromise() {  this.timeline.push({ char: 'push(P)', type: 'timer', }) },
+    pushTimer() {  this.timeline.push({ char: 'push(⏱)', type: 'push', }) },
+    pushPromise() {  this.timeline.push({ char: 'push(P)', type: 'push', }) },
 
-    nextTickToRaf() {
+    destinationHour() { return this.getPresentTime('hour') },
+    destinationMinute() { return this.getPresentTime('minute') },
+
+    getPresentTime(timeCounter) {
+      const tens = (this.$refs.destination.$refs[timeCounter].$refs.char[0].textContent)
+      const ones = (this.$refs.destination.$refs[timeCounter].$refs.char[1].textContent)
+
+      return tens + ones
+    },
+
+    setPresentTime() {
+      Object.assign(this.present, {
+        hour: this.destinationHour(),
+        minute: this.destinationMinute(),
+      })
+    },
+
+    travel({ hour, minute, } = {}) {
+      // set destination time
+      if(hour) this.destination.hour = hour
+      if(minute) this.destination.minute = minute
+      else ++this.destination.minute
+
+      // set departed time
+      this.departed = { ...this.present, }
+    },
+
+    // two in a row
+    // floorIt() {
+    //   this.$nextTick(this.travel)
+    //   this.$nextTick(this.setPresentTime)
+    // },
+
+    // // consecutive $nextTick
+    // floorIt() {
+    //   this.promisedNextTick(this.travel())
+    //   .then(_ => this.$nextTick(this.setPresentTime))
+    // },
+
+    // nested $nextTick
+    // floorIt() {
+    //   this.$nextTick(_ => {
+    //     this.travel()
+    //     this.$nextTick(this.setPresentTime)
+    //   })
+    // },
+
+    // $nextTick and rAF
+    // floorIt() {
+    //   this.$nextTick(_ => {
+    //     this.travel()
+    //     this.requestAnimationFrame(this.setPresentTime)
+    //   })
+    // },
+
+    // $nextTick and setImmediate
+    floorIt() {
       this.$nextTick(_ => {
-        ++this.destination.minute
+        this.travel()
+        setImmediate(this.setPresentTime)
       })
     },
   },
@@ -117,9 +175,7 @@ export default {
     <DeLoreanClock v-bind="departed" ref="departed" />
   </div>
 
-  <div class="controls">
-    <DeLoreanButton @click="nextTickToRaf">nextTick</DeLoreanButton>
-  </div>
+  <DeLoreanButton @click="floorIt">88 mph</DeLoreanButton>
 </div>
 </template>
 
@@ -129,13 +185,9 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
 
-  .centeredYRow {
-    width: 80%;
-    position: absolute;
-    top: 1.5rem;
-  }
+  .centeredYRow { width: 80%; }
 
   .timeline {
     margin-right: 0.5rem;
@@ -154,17 +206,12 @@ export default {
     .step { margin-right: 0.5rem; }
   }
 
-  .dashboard {
-    margin-bottom: 1rem;
-    width: 70vw;
-  }
+  .dashboard { width: 70vw; }
 
   .DeLoreanClock {
     filter: drop-shadow(0 0.5rem 0.3rem #000);
 
-    + .DeLoreanClock {
-      margin-top: 0.2rem;
-    }
+    + .DeLoreanClock { margin-top: 0.2rem; }
   }
 
   .DeLoreanButton + .DeLoreanButton { margin-left: 1vw; }

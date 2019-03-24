@@ -37,7 +37,7 @@ export default {
     height: calc(100% - 4.15rem);
     overflow: hidden;
 
-    &.fullHeight { height: 100%; }
+    &.fullHeight { height: 97%; }
   }
 }
 </style>
