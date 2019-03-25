@@ -49,7 +49,7 @@ export default {
   },
 
   watch: {
-    logLength() { setImmediate(_ => this.$refs.timeline.scrollLeft = this.$refs.timeline.scrollWidth) },
+    // logLength() { setImmediate(_ => this.$refs.timeline.scrollLeft = this.$refs.timeline.scrollWidth) },
   },
 
   created() {
@@ -102,75 +102,102 @@ export default {
       return tens + ones
     },
 
-    setImmediate(fn) {
-      console.log('pushing setImmediate')
+    // setImmediate(fn) {
+    //   console.log('pushing setImmediate')
 
-      const func = function(...args) {
-        console.log('sI()')
-        fn(...args)
-      }
-      setImmediate(func)
+    //   const func = function(...args) {
+    //     console.log('sI()')
+    //     fn(...args)
+    //   }
+    //   setImmediate(func)
+    // },
+
+    setDestinationTime({ hour, minute, } = {}) {
+      // set destination time
+      if(hour) this.destination.hour = hour
+      if(minute) this.destination.minute = minute
+      else ++this.destination.minute
     },
 
-    setPresentTime() {
+    travel() {
+      // Set Last Departed time
+      const { hour, minute, } = this.present
+      Object.assign(this.departed, { hour, minute })
+
+      // Set Present time
       Object.assign(this.present, {
         hour: this.destinationHour(),
         minute: this.destinationMinute(),
       })
     },
 
-    travel({ hour, minute, } = {}) {
-      // set destination time
-      if(hour) this.destination.hour = hour
-      if(minute) this.destination.minute = minute
-      else ++this.destination.minute
-
-      // set departed time
-      this.departed = { ...this.present, }
-    },
-
     // two in a row
-    // floorIt() {
-    //   this.$nextTick(this.travel)
-    //   this.$nextTick(this.setPresentTime)
-    // },
-
-    // consecutive $nextTick
     floorIt() {
-      this.promisedNextTick(this.travel)
-      .then(_ => this.$nextTick(this.setPresentTime))
+      this.$nextTick(this.setDestinationTime)
+      this.$nextTick(this.travel)
     },
+
+    // // consecutive $nextTick
+    // floorIt() {
+    //   this.promisedNextTick(this.setDestinationTime)
+    //   .then(_ => this.$nextTick(this.travel))
+    // },
 
     // nested $nextTick
     // floorIt() {
     //   this.$nextTick(_ => {
-    //     this.travel()
-    //     this.$nextTick(this.setPresentTime)
+    //     this.setDestinationTime()
+    //     this.$nextTick(this.travel)
     //   })
     // },
 
     // $nextTick and rAF
     // floorIt() {
-      // this.$nextTick(_ => {
-      //   this.travel()
-      //   window.requestAnimationFrame(this.setPresentTime)
-      // })
+    //   this.$nextTick(_ => {
+    //     this.setDestinationTime()
+    //     window.requestAnimationFrame(this.travel)
+    //   })
     // },
 
     // $nextTick and setImmediate
     // floorIt() {
     //   this.$nextTick(_ => {
-    //     this.travel()
-    //     this.setImmediate(this.setPresentTime)
+    //     this.setDestinationTime()
+    //     this.setImmediate(this.travel)
     //   })
     // },
+
+    // Promised requestAnimationFrame doesn't work
+    // floorIt() {
+    //   this.promisedRequestAnimationFrame(this.setDestinationTime)
+    //   .then(this.travel)
+    // },
+
+    // This works but at that point might as well just use rAF
+    // floorIt() {
+    //   this.$nextTick(_ => {
+    //     this.setDestinationTime()
+
+    //     window.requestAnimationFrame(_ => window.requestAnimationFrame(this.travel))
+    //   })
+    // },
+
+    // Works
+    // floorIt() {
+    //   window.requestAnimationFrame(_ => {
+    //     this.setDestinationTime()
+    //     window.requestAnimationFrame(this.travel)
+    //   })
+    // },
+
+
   },
 }
 </script>
 
 <template>
 <div class="DeLorean">
-  <div class="centeredYRow">
+  <div v-if="false" class="centeredYRow">
     <div ref="timeline" class="timeline">
       <!-- Need this div to force to scroll further left fsr --> <div ref="allSteps">
         <span
@@ -211,7 +238,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
+  // justify-content: space-evenly;  // TODO: for when timeline is visible
 
   .centeredYRow { width: 80%; }
 
@@ -234,7 +262,10 @@ export default {
     }
   }
 
-  .dashboard { width: 70vw; }
+  .dashboard {
+    margin-bottom: 1rem;  // TODO: remove when timeline is visible
+    width: 70vw;
+  }
 
   .DeLoreanClock {
     filter: drop-shadow(0 0.5rem 0.3rem #000);

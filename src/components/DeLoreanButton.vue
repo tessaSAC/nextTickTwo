@@ -23,5 +23,8 @@
     top: 1px;
     left: 1px;
   }
+
+  &:focus { outline: none; }
+  // guide on making this accessible: https://hackernoon.com/removing-that-ugly-focus-ring-and-keeping-it-too-6c8727fefcd2
 }
 </style>
