@@ -1,4 +1,6 @@
 /* eslint-disable */
+import timelineMethods from '../mixins/timelineMethods'
+const logTimeline = timelineMethods.methods.log.bind(window)
 
 /*!
  * Vue.js v2.6.8
@@ -1901,7 +1903,14 @@ var pending = false;
 
 function flushCallbacks () {
   console.error('flushing callbacks')
-  if(window.timeline) window.timeline.push({ char: '{', type: 'flush' })
+  if(window.timeline) {
+    let newFlushQueue = { queue: 'flushQueue', steps: [], }
+
+    if(window.timeline.length > 1 && window.timeline[window.timeline.length - 1].queue === 'task') window.timeline.splice(this.lenTimeline - 2, newFlushQueue)
+    else window.timeline.push(newFlushQueue)
+  }
+
+  // if(window.timeline) logTimeline({ char: '{', type: 'flush' })
 
   pending = false;
   var copies = callbacks.slice(0);
@@ -1910,7 +1919,7 @@ function flushCallbacks () {
     copies[i]();
   }
   console.error('done flushing callbacks')
-  // if(window.timeline) window.timeline.push({ char: '}', type: 'flush' }  // this causes infinite loop bc it causes rerender...
+  // if(window.timeline) logTimeline({ char: '}', type: 'flush' }  // this causes infinite loop bc it causes rerender...
 }
 
 // Here we have async deferring wrappers using microtasks.
@@ -1978,10 +1987,18 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   };
 }
 
+function whichQueue() {
+  const lenTimeline = window.timeline.length
+  const lastEl = window.timeline[ lenTimeline ? lenTimeline - 1 : 0 ]
+  const secondToLastEl = window.timeline[ lenTimeline > 1 ? lenTimeline - 2 : 0 ]
+
+  return lastEl.queue !== 'task' ? lastEl.queue : secondToLastEl.queue
+}
+
 function nextTick (cb, ctx, pushedByVue) {
   if(pushedByVue) {
     console.warn('nextTick pushed by Vue')
-    if(window.timeline) window.timeline.push({ char: 'p(nT)', type: 'push' })
+    if(window.timeline) logTimeline(whichQueue(), { char: 'p(nT)', type: 'push', })
   }
 
   if(window.pulley) window.pulley.push([])
@@ -1990,7 +2007,8 @@ function nextTick (cb, ctx, pushedByVue) {
   callbacks.push(function () {
     // for(let i = 0; i < 1000; ++i) { console.log('bullet time') }
     if (cb) {
-      if(window.timeline && pushedByVue) window.timeline.push({ char: 'nT()', type: 'nT' })
+      // if(window.timeline) { logTimeline('flushQueue', { char: '$()', type: '$', }) }
+
       try {
         cb.call(ctx);
       } catch (e) {
@@ -3522,16 +3540,25 @@ function renderMixin (Vue) {
 
   Vue.prototype.$nextTick = function (fn) {
     console.warn('💲nextTick 🤑🤑🤑 pushed')
-    if(window.timeline) window.timeline.push({ char: 'push($)', type: 'push' })
 
-    //  NB: Do this in component instead
-    // const fnTimelined = (...args) => {
-    //   if(window.timeline) window.timeline.push({ char: '$()', type: '$' })
-    //   if(fn) return fn(...args)
-    //   else return Promise.resolve(this)
-    // }
+    if(window.timeline) {
+      const lenTimeline = window.timeline.length
+      const newStep = { char: 'p($)', type: 'push', }
 
-    return nextTick(fn, this)
+      if(lenTimeline === 1) logTimeline('task', newStep)
+      else logTimeline(whichQueue(), newStep)
+
+      if(fn) {
+        function fnTimelined() {
+          logTimeline('flushQueue', { char: '$()', type: '$' })
+          return fn()
+        }
+
+        return nextTick(fnTimelined, this, false)
+      }
+    }
+
+    return nextTick(fn, this, false)
   };
 
   Vue.prototype._render = function () {
@@ -4392,7 +4419,13 @@ function queueWatcher (watcher) {
         flushSchedulerQueue();
         return
       }
-      nextTick(flushSchedulerQueue, undefined, true);  // NB: Passing a "pushed by Vue" var to `flushSchedulerQueue`
+
+      const fsq = _ => {
+        if(window.timeline) logTimeline('flushQueue', { char: 'nT()', type: 'nT', })
+        return flushSchedulerQueue()
+      }
+
+      nextTick(fsq, undefined, true);  // NB: Passing a "pushed by Vue" var to `flushSchedulerQueue`
     }
   }
 }

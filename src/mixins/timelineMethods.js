@@ -1,25 +1,23 @@
 export default {
   data: _ => ({
     timeline: [
-      {
-        queue: 'task',
-        steps: [],
-      }, {
-        queue: 'nextTick',
-        steps: [],
-      }, {
-        queue: 'microtask',
-        steps: [],
-      },
-    ]
+      { queue: 'task', steps: [], },
+      // { queue: 'flushQueue', steps: [], },
+      // { queue: 'microtask', steps: [], },
+    ],
   }),
 
   computed: {
     hasOpenMicrotaskQueue() { return this.lastEl.queue === 'microtask' || this.hasOpenTaskQueue && this.secondToLastEl.queue === 'microtask' },
     hasOpenTaskQueue() { return this.lastEl.queue === 'task' },
-    lastEl() { return this.timeline[ this.lenTimeline - 1 ] },
+    lastEl() { return this.timeline[ this.lastIdx ] },
+    lastIdx() { return this.lenTimeline ? this.lenTimeline - 1 : 0 },
     lenTimeline() { return this.timeline.length },
-    secondToLastEl() { return this.timeline[ this.lenTimeline - 2 ] }
+    secondToLastEl() { return this.timeline[ this.lenTimeline - 2 ] },
+  },
+
+  created() {
+    window.timeline = this.timeline
   },
 
   methods: {
@@ -28,34 +26,42 @@ export default {
     // push(nT) goes into last of mT or flushQueue -- if not in queue then it goes in mT
     // new flushQ or mTQ are last except for task queues (when length > 1)
 
-    push(queue, step) {
+    log(queue, step) {
+      const lastIdx = _ => this.timeline.length > 0 ? this.timeline.length - 1 : 0
+      const lastEl = _ => this.timeline[ lastIdx() ]
+      const hasOpenTaskQueue = _ => lastEl().queue === 'task'
+      const lenTimeline = _ => this.timeline.length
+      const secondToLastEl = _ => this.timeline[ lenTimeline() - 2 ]
+      const hasOpenMicrotaskQueue = _ => lastEl().queue === 'microtask' || hasOpenTaskQueue() && secondToLastEl().queue === 'microtask'
+
       // Short-circuit tasks first
       if(queue === 'task') {
-        if(lastEl.queue !== queue) this.timeline.push({ queue, steps: [], })
-        return this.lastEl.push(step)
+        if(lastEl().queue !== queue) this.timeline.push({ queue, steps: [], })
+        return lastEl().steps.push(step)
       }
 
       // What remains are either nextTicks or microtasks
       if(queue === 'microtask') {
-        if(!this.hasOpenMicrotaskQueue) {
+        if(!hasOpenMicrotaskQueue()) {
           const newMicrotaskQueue = { type: 'microtask', queue: [ step, ], }
 
-          if(this.hasOpenTaskQueue) return this.timeline.splice(this.lenTimeline - 2, newMicrotaskQueue)
-          return this.timeline.push(newMicrotaskQueue)
+          if(hasOpenTaskQueue()) return this.timeline.splice(lenTimeline() - 2, newMicrotaskQueue)
+          return timeline.push(newMicrotaskQueue)
         }
 
-        const microtaskQueue = this.lastEl.queue === 'microtask' ? this.lastEl : this.secondToLastEl
+        const microtaskQueue = lastEl().queue === 'microtask' ? lastEl() : secondToLastEl()
         microtaskQueue.push(step)
       }
 
-      if(queue === 'nextTick') {
-        let nextTickQueue
+      if(queue === 'flushQueue') {
+        let flushQueue
 
-        for(let i = lenTimeline - 1; i > 0; --i) {
-          if(this.timeline[i].queue === 'nextTick') nextTickQueue = this.timeline[i]
+        for(let i = lenTimeline() - 1; i > 0; --i) {
+          if(this.timeline[i].queue === queue) {
+            flushQueue = this.timeline[i]
+            return flushQueue.steps.push(step)
+          }
         }
-
-        nextTickQueue.push(step)
       }
     },
   },

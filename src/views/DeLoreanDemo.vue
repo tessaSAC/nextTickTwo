@@ -2,12 +2,13 @@
 import DeLoreanButton from '../components/DeLoreanButton'
 import DeLoreanClock from '../components/DeLoreanClock'
 import promisedMethods from '../mixins/promisedMethods'
+import timelineMethods from '../mixins/timelineMethods'
 import { setImmediate, } from 'timers'
 
 export default {
   components: { DeLoreanButton, DeLoreanClock, },
 
-  mixins: [ promisedMethods, ],
+  mixins: [ promisedMethods, timelineMethods, ],
 
   data: _ => ({
     destination: {
@@ -40,7 +41,6 @@ export default {
       labelText: 'time last departed',
     },
 
-    timeline: [],
     uselessParam: null,
   }),
 
@@ -53,9 +53,6 @@ export default {
   },
 
   created() {
-    // TODO: Move to mixin
-    // window.timeline = this.timeline
-
     // const rAF = window.requestAnimationFrame
     // window.requestAnimationFrame = (...args) => {
     //   this.timeline.push({ char: 'p(r)', type: 'push', })
@@ -72,7 +69,7 @@ export default {
 
   methods: {
     async clearTimeline() {
-      this.timeline = []
+      this.timeline = [{ queue: 'task', steps: [], }]
 
       await this.$nextTick()  // don't include timeline rerender call in the timeline
       window.timeline = this.timeline
@@ -82,7 +79,7 @@ export default {
       switch(type) {
         case 'push': return '#9d8f8a'
         case 'task': return '#e06b2a'
-        case 'flush': return '#f3c446'
+        case 'flushQueue': return '#f3c446'
         case 'microtask': return '#2766a4'
         case 'promise': return '#ba7bccff'
         case '$': return '#FCD1E1'
@@ -138,7 +135,7 @@ export default {
     //   this.$nextTick(this.setPresentTime)
     // },
 
-    // // consecutive $nextTick
+    // consecutive $nextTick
     floorIt() {
       this.promisedNextTick(this.travel)
       .then(_ => this.$nextTick(this.setPresentTime))
@@ -177,11 +174,22 @@ export default {
     <div ref="timeline" class="timeline">
       <!-- Need this div to force to scroll further left fsr --> <div ref="allSteps">
         <span
-          v-for="({ char, type, }, idx) in timeline"
+          v-for="({ queue, steps, }, idx) in timeline"
           :key="idx"
-          :style="{ color: getColor(type) }"
+          :style="{ color: getColor(queue) }"
           class="step"
-        >{{ char }}</span>
+        >
+          {{ queue === 'task' ? '[' : queue === 'flushQueue' ? '{' : '(' }}
+
+          <span
+            v-for="({ char, type, }, idx) in steps"
+            :key="idx"
+            :style="{ color: getColor(type) }"
+            class="step"
+          >{{ char }}</span>
+
+          {{ queue === 'task' ? ']' : queue === 'flushQueue' ? '}' : ')' }}
+        </span>
       </div>
     </div>
     <DeLoreanButton @click="clearTimeline">x</DeLoreanButton>
@@ -221,7 +229,9 @@ export default {
     font-size: 1rem;
     font-family: Nova;
 
-    .step { margin-right: 0.5rem; }
+    .step:not(:last-child) {
+      margin-right: 0.5rem;
+    }
   }
 
   .dashboard { width: 70vw; }
