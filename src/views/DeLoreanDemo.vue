@@ -36,7 +36,7 @@ export default {
       day: 26,
       year: 1985,
       hour: 1,
-      minute: 20,
+      minute: 15,
       textColor: '#f8ef4f',
       labelText: 'time last departed',
     },
@@ -113,16 +113,17 @@ export default {
     // },
 
     setDestinationTime({ hour, minute, } = {}) {
-      // set destination time
+      console.log('set dest time')
       if(hour) this.destination.hour = hour
       if(minute) this.destination.minute = minute
       else ++this.destination.minute
     },
 
     travel() {
+      console.log('calling travel')
       // Set Last Departed time
       const { hour, minute, } = this.present
-      Object.assign(this.departed, { hour, minute })
+      Object.assign(this.departed, { hour, minute, })
 
       // Set Present time
       Object.assign(this.present, {
@@ -131,13 +132,19 @@ export default {
       })
     },
 
-    // two in a row
-    floorIt() {
-      this.$nextTick(this.setDestinationTime)
-      this.$nextTick(this.travel)
+    setImmediate(...args) {
+      console.log('running setImmediate')
+      return setImmediate(...args)
     },
 
-    // // consecutive $nextTick
+    // two in a row
+    // floorIt() {
+    //   debugger
+    //   this.$nextTick(this.setDestinationTime)
+    //   this.$nextTick(this.travel)
+    // },
+
+    // consecutive $nextTick
     // floorIt() {
     //   this.promisedNextTick(this.setDestinationTime)
     //   .then(_ => this.$nextTick(this.travel))
@@ -160,17 +167,24 @@ export default {
     // },
 
     // $nextTick and setImmediate
-    // floorIt() {
-    //   this.$nextTick(_ => {
-    //     this.setDestinationTime()
-    //     this.setImmediate(this.travel)
-    //   })
-    // },
+    floorIt() {
+      this.$nextTick(_ => {
+        this.setDestinationTime()
+        this.setImmediate(this.travel)
+      })
+    },
 
     // Promised requestAnimationFrame doesn't work
     // floorIt() {
     //   this.promisedRequestAnimationFrame(this.setDestinationTime)
     //   .then(this.travel)
+    // },
+
+    // promisedRequestAnimationFrame(cb) {
+    //   return new Promise(resolve => window.requestAnimationFrame(_ => {
+    //     cb()
+    //     resolve()
+    //   }))
     // },
 
     // This works but at that point might as well just use rAF
@@ -190,7 +204,56 @@ export default {
     //   })
     // },
 
+    // floorIt() {
+    //   this.$nextTick(_ => {
 
+    //     settimeout(this.setDestinationTime, (0))
+
+    //     setImmediate(_ => this.$nextTick(this.travel))
+
+    //     this.$nextTick(this.$nextTick(this.travel))
+
+    //     settimeout(_ => this.$nextTick(this.travel))
+
+    //     this.$nextTick(Promise.resolve().then(this.setDestinationTime))
+
+    //     Promise.resolve().then(this.setDestinationTime)
+
+    //   })
+
+    // },
+
+    // floorIt() {  // order
+    //   this.$nextTick(_ => {  // 1
+
+    //     settimeout(  // 2
+    //       this.setDestinationTime, (0))  // 15
+
+    //     setImmediate(_ => {  // 3
+    //       this.$nextTick(  // 13
+    //         this.travel  // 14
+    //       )
+    //     })
+
+    //     this.$nextTick(_ => {  // 4
+    //       this.$nextTick(  // 8
+    //         this.travel  // 11
+    //       )
+    //     })
+
+    //     settimeout(_ => {  // 5
+    //       this.$nextTick(this.travel)  // 16
+    //     })
+
+    //     this.$nextTick(_ => {  // 6
+    //       Promise.resolve()  // 9
+    //       .then(this.setDestinationTime)  // 12
+    //     })
+
+    //     Promise.resolve(2)  // 7
+    //     .then(this.setDestinationTime)  // 10
+    //   })
+    // },
   },
 }
 </script>

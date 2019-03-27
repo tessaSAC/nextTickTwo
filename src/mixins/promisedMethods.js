@@ -18,10 +18,12 @@ export default {
 
   methods: {
     promisedNextTick(cb) {
+      console.log('running promise')
       // this.log('microtask', { char: 'p(P)', type: 'push', })
       return new Promise(resolve => this.$nextTick(_ => {
-          cb()
-          resolve()
+        console.log('promised nexttick')
+        cb()
+        resolve()
       }))
     },
 
@@ -29,7 +31,10 @@ export default {
       // this.log('microtask', { char: 'p(P)', type: 'push', })
 
       // adapted from https://medium.com/@samthor/js-callbacks-to-promises-541adc46c07c
+
+      console.log('running promise')
       return new Promise(resolve => window.requestAnimationFrame(_ => {
+        console.log('promised rAF')
         cb()
         resolve()
       }))
