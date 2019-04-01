@@ -167,12 +167,12 @@ export default {
     // },
 
     // $nextTick and setImmediate
-    floorIt() {
-      this.$nextTick(_ => {
-        this.setDestinationTime()
-        this.setImmediate(this.travel)
-      })
-    },
+    // floorIt() {
+    //   this.$nextTick(_ => {
+    //     this.setDestinationTime()
+    //     this.setImmediate(this.travel)
+    //   })
+    // },
 
     // Promised requestAnimationFrame doesn't work
     // floorIt() {
@@ -204,29 +204,29 @@ export default {
     //   })
     // },
 
-    // floorIt() {
-    //   this.$nextTick(_ => {
+    floorIt() {
+      this.$nextTick(_ => {
 
-    //     settimeout(this.setDestinationTime, (0))
+        setTimeout(this.setDestinationTime, (0))
 
-    //     setImmediate(_ => this.$nextTick(this.travel))
+        setImmediate(_ => this.$nextTick(this.travel))
 
-    //     this.$nextTick(this.$nextTick(this.travel))
+        this.$nextTick(this.$nextTick(this.travel))
 
-    //     settimeout(_ => this.$nextTick(this.travel))
+        setTimeout(_ => this.$nextTick(this.travel))
 
-    //     this.$nextTick(Promise.resolve().then(this.setDestinationTime))
+        this.$nextTick(Promise.resolve().then(this.setDestinationTime))
 
-    //     Promise.resolve().then(this.setDestinationTime)
+        Promise.resolve().then(this.setDestinationTime)
 
-    //   })
+      })
 
-    // },
+    },
 
     // floorIt() {  // order
     //   this.$nextTick(_ => {  // 1
 
-    //     settimeout(  // 2
+    //     setTimeout(  // 2
     //       this.setDestinationTime, (0))  // 15
 
     //     setImmediate(_ => {  // 3
@@ -241,7 +241,7 @@ export default {
     //       )
     //     })
 
-    //     settimeout(_ => {  // 5
+    //     setTimeout(_ => {  // 5
     //       this.$nextTick(this.travel)  // 16
     //     })
 
