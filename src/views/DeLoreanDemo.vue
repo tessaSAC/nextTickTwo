@@ -49,7 +49,7 @@ export default {
   },
 
   watch: {
-    // logLength() { setImmediate(_ => this.$refs.timeline.scrollLeft = this.$refs.timeline.scrollWidth) },
+    logLength() { setImmediate(_ => this.$refs.timeline.scrollLeft = this.$refs.timeline.scrollWidth) },
   },
 
   created() {
@@ -138,11 +138,10 @@ export default {
     },
 
     // two in a row
-    // floorIt() {
-    //   debugger
-    //   this.$nextTick(this.setDestinationTime)
-    //   this.$nextTick(this.travel)
-    // },
+    floorIt() {
+      this.$nextTick(this.setDestinationTime)
+      this.$nextTick(this.travel)
+    },
 
     // consecutive $nextTick
     // floorIt() {
@@ -204,24 +203,7 @@ export default {
     //   })
     // },
 
-    floorIt() {
-      this.$nextTick(_ => {
-
-        setTimeout(this.setDestinationTime, (0))
-
-        setImmediate(_ => this.$nextTick(this.travel))
-
-        this.$nextTick(this.$nextTick(this.travel))
-
-        setTimeout(_ => this.$nextTick(this.travel))
-
-        this.$nextTick(Promise.resolve().then(this.setDestinationTime))
-
-        Promise.resolve().then(this.setDestinationTime)
-
-      })
-
-    },
+    // fs
 
     // floorIt() {  // order
     //   this.$nextTick(_ => {  // 1
@@ -260,7 +242,7 @@ export default {
 
 <template>
 <div class="DeLorean">
-  <div v-if="false" class="centeredYRow">
+  <div class="centeredYRow">
     <div ref="timeline" class="timeline">
       <!-- Need this div to force to scroll further left fsr --> <div ref="allSteps">
         <span
@@ -301,8 +283,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  // justify-content: space-evenly;  // TODO: for when timeline is visible
+  // justify-content: center;
+  justify-content: space-evenly;  // for when timeline is visible
 
   .centeredYRow { width: 80%; }
 
@@ -326,7 +308,7 @@ export default {
   }
 
   .dashboard {
-    margin-bottom: 1rem;  // TODO: remove when timeline is visible
+    // margin-bottom: 1rem;  // remove when timeline is visible
     width: 70vw;
   }
 

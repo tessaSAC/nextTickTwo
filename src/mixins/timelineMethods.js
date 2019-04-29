@@ -27,7 +27,7 @@ export default {
     // new flushQ or mTQ are last except for task queues (when length > 1)
 
     log(queue, step) {
-      const lastIdx = _ => this.timeline.length > 0 ? this.timeline.length - 1 : 0
+      const lastIdx = _ => this.timeline.length ? this.timeline.length - 1 : 0
       const lastEl = _ => this.timeline[ lastIdx() ]
       const hasOpenTaskQueue = _ => lastEl().queue === 'task'
       const lenTimeline = _ => this.timeline.length
@@ -54,6 +54,7 @@ export default {
       }
 
       if(queue === 'flushQueue') {
+        console.log('flush')
         let flushQueue
 
         for(let i = lenTimeline() - 1; i > 0; --i) {

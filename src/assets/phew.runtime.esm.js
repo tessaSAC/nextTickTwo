@@ -1901,7 +1901,7 @@ var pending = false;
 
 function flushCallbacks () {
   console.error('flushing callbacks')
-  if(window.timeline) window.timeline.push({ char: '{', type: 'flush' })
+  // if(window.timeline) window.timeline[ window.timeline.length - 1 ].steps.push({ char: '{', type: 'flush' })
 
   pending = false;
   var copies = callbacks.slice(0);
@@ -1981,7 +1981,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 function nextTick (cb, ctx, pushedByVue) {
   if(pushedByVue) {
     console.warn('nextTick pushed by Vue')
-    if(window.timeline) window.timeline.push({ char: 'p(nT)', type: 'push' })
+    if(window.timeline) window.timeline[ window.timeline.length - 1 ].steps.push({ char: 'p(nT)', type: 'push' })
   }
 
   if(window.pulley) window.pulley.push([])
@@ -1990,7 +1990,7 @@ function nextTick (cb, ctx, pushedByVue) {
   callbacks.push(function () {
     // for(let i = 0; i < 1000; ++i) { console.log('bullet time') }
     if (cb) {
-      if(window.timeline && pushedByVue) window.timeline.push({ char: 'nT()', type: 'nT' })
+      if(window.timeline && pushedByVue) window.timeline[ window.timeline.length - 1 ].steps.push({ char: 'nT()', type: 'nT' })
       try {
         cb.call(ctx);
       } catch (e) {
@@ -3522,7 +3522,7 @@ function renderMixin (Vue) {
 
   Vue.prototype.$nextTick = function (fn) {
     console.warn('💲nextTick 🤑🤑🤑 pushed')
-    if(window.timeline) window.timeline.push({ char: 'push($)', type: 'push' })
+    if(window.timeline) window.timeline[ window.timeline.length - 1 ].steps.push({ char: 'push($)', type: 'push' })
 
     //  NB: Do this in component instead
     // const fnTimelined = (...args) => {
