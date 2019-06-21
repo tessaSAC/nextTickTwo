@@ -18,10 +18,11 @@ export default {
 
   methods: {
     promisedNextTick(cb) {
-      console.log('running promise')
-      // this.log('microtask', { char: 'p(P)', type: 'push', })
+      console.log('pushing promise')
+
       return new Promise(resolve => this.$nextTick(_ => {
         console.log('promised nexttick')
+        this.log('microtask', { char: 'p(P)', type: 'push', })
         cb()
         resolve()
       }))

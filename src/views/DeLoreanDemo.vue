@@ -1,50 +1,50 @@
 <script>
-import DeLoreanButton from "../components/DeLoreanButton";
-import DeLoreanClock from "../components/DeLoreanClock";
-import promisedMethods from "../mixins/promisedMethods";
-import timelineMethods from "../mixins/timelineMethods";
-import { setImmediate } from "timers";
+import DeLoreanButton from "../components/DeLoreanButton"
+import DeLoreanClock from "../components/DeLoreanClock"
+import promisedMethods from "../mixins/promisedMethods"
+import timelineMethods from "../mixins/timelineMethods"
+import { setImmediate } from "timers"
 
 export default {
   components: { DeLoreanButton, DeLoreanClock },
 
-  mixins: [promisedMethods, timelineMethods],
+  mixins: [ promisedMethods, timelineMethods ],
 
   data: _ => ({
     legend: [
-      { label: "[ ]", type: "task" },
-      { label: "{ }", type: "flushQueue" },
-      { label: "( )", type: "microtask" }
+      { label: '[ ]', type: 'task' },
+      { label: '{ }', type: 'flushQueue' },
+      { label: '( )', type: 'microtask' }
     ],
 
     destination: {
-      month: "Oct",
+      month: 'Oct',
       day: 26,
       year: 1985,
       hour: 1,
       minute: 21,
-      labelText: "destination time"
+      labelText: 'destination time'
     },
 
     present: {
-      month: "Oct",
+      month: 'Oct',
       day: 26,
       year: 1985,
       hour: 1,
       minute: 20,
-      textColor: "#67fd48",
-      ledColor: "green",
-      labelText: "present time"
+      textColor: '#67fd48',
+      ledColor: 'green',
+      labelText: 'present time'
     },
 
     departed: {
-      month: "Oct",
+      month: 'Oct',
       day: 26,
       year: 1985,
       hour: 1,
       minute: 15,
-      textColor: "#f8ef4f",
-      labelText: "time last departed"
+      textColor: '#f8ef4f',
+      labelText: 'time last departed'
     },
 
     uselessParam: null
@@ -52,7 +52,7 @@ export default {
 
   computed: {
     logLength() {
-      return this.timeline.length;
+      return this.timeline.length
     }
   },
 
@@ -60,7 +60,7 @@ export default {
     logLength() {
       setImmediate(
         _ => (this.$refs.timeline.scrollLeft = this.$refs.timeline.scrollWidth)
-      );
+      )
     }
   },
 
@@ -72,7 +72,7 @@ export default {
     // }
 
     // TODO: Move to mixin
-    const sI = setImmediate;
+    const sI = setImmediate
     // setImmediate = args => {
     //   console.log('setImmediate')
     //   sI(args)
@@ -81,56 +81,46 @@ export default {
 
   methods: {
     async clearTimeline() {
-      this.timeline = [{ queue: "task", steps: [] }];
+      this.timeline = [{ queue: 'task', steps: [] }]
 
-      await this.$nextTick(); // don't include timeline rerender call in the timeline
-      window.timeline = this.timeline;
+      await this.$nextTick() // don't include timeline rerender call in the timeline
+      window.timeline = this.timeline
     },
 
     getColor(type) {
       switch (type) {
-        case "push":
-          return "#9d8f8a";
-        case "task":
-          return "#e06b2a";
-        case "flushQueue":
-          return "#f3c446";
-        case "microtask":
-          return "#2766a4";
-        case "promise":
-          return "#ba7bccff";
-        case "$":
-          return "#FCD1E1";
-        case "nT":
-          return "#e16ba0ff";
-        case "rAF":
-          return "#e6ac6fff";
-        case "timer":
-          return "#53c6baff";
+        case 'push':
+          return '#9d8f8a'
+        case 'task':
+          return '#e06b2a'
+        case 'flushQueue':
+          return '#f3c446'
+        case 'microtask':
+          return '#2766a4'
+        case 'promise':
+          return '#ba7bccff'
+        case '$':
+          return '#FCD1E1'
+        case 'nT':
+          return '#e16ba0ff'
+        case 'rAF':
+          return '#e6ac6fff'
+        case 'timer':
+          return '#53c6baff'
       }
     },
 
-    pushTimer() {
-      this.timeline.push({ char: "push(⏱)", type: "push" });
-    },
-    pushPromise() {
-      this.timeline.push({ char: "push(P)", type: "push" });
-    },
+    pushTimer() { this.timeline.push({ char: 'push(⏱)', type: 'push' }) },
+    pushPromise() { this.timeline.push({ char: 'push(P)', type: 'push' }) },
 
-    destinationHour() {
-      return this.getPresentTime("hour");
-    },
-    destinationMinute() {
-      return this.getPresentTime("minute");
-    },
+    destinationHour() { return this.getPresentTime('hour') },
+    destinationMinute() { return this.getPresentTime('minute') },
 
     getPresentTime(timeCounter) {
-      const tens = this.$refs.destination.$refs[timeCounter].$refs.char[0]
-        .textContent;
-      const ones = this.$refs.destination.$refs[timeCounter].$refs.char[1]
-        .textContent;
+      const tens = this.$refs.destination.$refs[timeCounter].$refs.char[0].textContent
+      const ones = this.$refs.destination.$refs[timeCounter].$refs.char[1].textContent
 
-      return tens + ones;
+      return tens + ones
     },
 
     // setImmediate(fn) {
@@ -144,47 +134,47 @@ export default {
     // },
 
     setDestinationTime({ hour, minute } = {}) {
-      console.log("set dest time");
-      if (hour) this.destination.hour = hour;
-      if (minute) this.destination.minute = minute;
-      else ++this.destination.minute;
+      console.log('set dest time')
+      if (hour) this.destination.hour = hour
+      if (minute) this.destination.minute = minute
+      else ++this.destination.minute
     },
 
     travel() {
-      console.log("calling travel");
+      console.log('calling travel')
       // Set Last Departed time
-      const { hour, minute } = this.present;
-      Object.assign(this.departed, { hour, minute });
+      const { hour, minute } = this.present
+      Object.assign(this.departed, { hour, minute })
 
       // Set Present time
       Object.assign(this.present, {
         hour: this.destinationHour(),
         minute: this.destinationMinute()
-      });
+      })
     },
 
     setImmediate(...args) {
-      console.log("running setImmediate");
-      return setImmediate(...args);
+      console.log('running setImmediate')
+      return setImmediate(...args)
     },
 
     floorIt() {
-      if (!this.hasOpenTaskQueue)
-        this.timeline.push({ queue: "task", steps: [] });
-      this.twoInARow();
+      if (!this.hasOpenTaskQueue) this.timeline.push({ queue: 'task', steps: [] })
+      // this.twoInARow()
+      this.consecutiveNextTick()
     },
 
     // two in a row
     twoInARow() {
-      this.$nextTick(this.setDestinationTime);
-      this.$nextTick(this.travel);
-    }
+      this.$nextTick(this.setDestinationTime)
+      this.$nextTick(this.travel)
+    },
 
     // consecutive $nextTick
-    // floorIt() {
-    //   this.promisedNextTick(this.setDestinationTime)
-    //   .then(_ => this.$nextTick(this.travel))
-    // },
+    consecutiveNextTick() {
+      this.promisedNextTick(this.setDestinationTime)
+      .then(_ => this.$nextTick(this.travel))
+    },
 
     // nested $nextTick
     // floorIt() {
@@ -274,7 +264,7 @@ export default {
     //   })
     // },
   }
-};
+}
 </script>
 
 <template>
