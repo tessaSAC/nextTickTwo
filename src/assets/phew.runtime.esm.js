@@ -1901,7 +1901,10 @@ var pending = false;
 
 function flushCallbacks () {
   console.error('flushing callbacks')
-  // if(window.timeline) window.timeline[ window.timeline.length - 1 ].steps.push({ char: '{', type: 'flush' })
+  if(window.timeline) {
+    window.timeline.push({ queue: 'flushQueue', steps: [], })
+  }
+
 
   pending = false;
   var copies = callbacks.slice(0);

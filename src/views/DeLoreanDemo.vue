@@ -1,55 +1,67 @@
 <script>
-import DeLoreanButton from '../components/DeLoreanButton'
-import DeLoreanClock from '../components/DeLoreanClock'
-import promisedMethods from '../mixins/promisedMethods'
-import timelineMethods from '../mixins/timelineMethods'
-import { setImmediate, } from 'timers'
+import DeLoreanButton from "../components/DeLoreanButton";
+import DeLoreanClock from "../components/DeLoreanClock";
+import promisedMethods from "../mixins/promisedMethods";
+import timelineMethods from "../mixins/timelineMethods";
+import { setImmediate } from "timers";
 
 export default {
-  components: { DeLoreanButton, DeLoreanClock, },
+  components: { DeLoreanButton, DeLoreanClock },
 
-  mixins: [ promisedMethods, timelineMethods, ],
+  mixins: [promisedMethods, timelineMethods],
 
   data: _ => ({
+    legend: [
+      { label: "[ ]", type: "task" },
+      { label: "{ }", type: "flushQueue" },
+      { label: "( )", type: "microtask" }
+    ],
+
     destination: {
-      month: 'Oct',
+      month: "Oct",
       day: 26,
       year: 1985,
       hour: 1,
       minute: 21,
-      labelText: 'destination time',
+      labelText: "destination time"
     },
 
     present: {
-      month: 'Oct',
+      month: "Oct",
       day: 26,
       year: 1985,
       hour: 1,
       minute: 20,
-      textColor: '#67fd48',
-      ledColor: 'green',
-      labelText: 'present time',
+      textColor: "#67fd48",
+      ledColor: "green",
+      labelText: "present time"
     },
 
     departed: {
-      month: 'Oct',
+      month: "Oct",
       day: 26,
       year: 1985,
       hour: 1,
       minute: 15,
-      textColor: '#f8ef4f',
-      labelText: 'time last departed',
+      textColor: "#f8ef4f",
+      labelText: "time last departed"
     },
 
-    uselessParam: null,
+    uselessParam: null
   }),
 
   computed: {
-    logLength() { return this.timeline.length },
+    logLength() {
+      return this.timeline.length;
+    }
   },
 
   watch: {
-    logLength() { setImmediate(_ => this.$refs.timeline.scrollLeft = this.$refs.timeline.scrollWidth) },
+    logLength() {
+      setImmediate(
+        _ => (this.$refs.timeline.scrollLeft = this.$refs.timeline.scrollWidth)
+      );
+    }
   },
 
   created() {
@@ -60,7 +72,7 @@ export default {
     // }
 
     // TODO: Move to mixin
-    const sI = setImmediate
+    const sI = setImmediate;
     // setImmediate = args => {
     //   console.log('setImmediate')
     //   sI(args)
@@ -69,37 +81,56 @@ export default {
 
   methods: {
     async clearTimeline() {
-      this.timeline = [{ queue: 'task', steps: [], }]
+      this.timeline = [{ queue: "task", steps: [] }];
 
-      await this.$nextTick()  // don't include timeline rerender call in the timeline
-      window.timeline = this.timeline
+      await this.$nextTick(); // don't include timeline rerender call in the timeline
+      window.timeline = this.timeline;
     },
 
     getColor(type) {
-      switch(type) {
-        case 'push': return '#9d8f8a'
-        case 'task': return '#e06b2a'
-        case 'flushQueue': return '#f3c446'
-        case 'microtask': return '#2766a4'
-        case 'promise': return '#ba7bccff'
-        case '$': return '#FCD1E1'
-        case 'nT': return '#e16ba0ff'
-        case 'rAF': return '#e6ac6fff'
-        case 'timer': return '#53c6baff'
+      switch (type) {
+        case "push":
+          return "#9d8f8a";
+        case "task":
+          return "#e06b2a";
+        case "flushQueue":
+          return "#f3c446";
+        case "microtask":
+          return "#2766a4";
+        case "promise":
+          return "#ba7bccff";
+        case "$":
+          return "#FCD1E1";
+        case "nT":
+          return "#e16ba0ff";
+        case "rAF":
+          return "#e6ac6fff";
+        case "timer":
+          return "#53c6baff";
       }
     },
 
-    pushTimer() {  this.timeline.push({ char: 'push(⏱)', type: 'push', }) },
-    pushPromise() {  this.timeline.push({ char: 'push(P)', type: 'push', }) },
+    pushTimer() {
+      this.timeline.push({ char: "push(⏱)", type: "push" });
+    },
+    pushPromise() {
+      this.timeline.push({ char: "push(P)", type: "push" });
+    },
 
-    destinationHour() { return this.getPresentTime('hour') },
-    destinationMinute() { return this.getPresentTime('minute') },
+    destinationHour() {
+      return this.getPresentTime("hour");
+    },
+    destinationMinute() {
+      return this.getPresentTime("minute");
+    },
 
     getPresentTime(timeCounter) {
-      const tens = (this.$refs.destination.$refs[timeCounter].$refs.char[0].textContent)
-      const ones = (this.$refs.destination.$refs[timeCounter].$refs.char[1].textContent)
+      const tens = this.$refs.destination.$refs[timeCounter].$refs.char[0]
+        .textContent;
+      const ones = this.$refs.destination.$refs[timeCounter].$refs.char[1]
+        .textContent;
 
-      return tens + ones
+      return tens + ones;
     },
 
     // setImmediate(fn) {
@@ -112,36 +143,42 @@ export default {
     //   setImmediate(func)
     // },
 
-    setDestinationTime({ hour, minute, } = {}) {
-      console.log('set dest time')
-      if(hour) this.destination.hour = hour
-      if(minute) this.destination.minute = minute
-      else ++this.destination.minute
+    setDestinationTime({ hour, minute } = {}) {
+      console.log("set dest time");
+      if (hour) this.destination.hour = hour;
+      if (minute) this.destination.minute = minute;
+      else ++this.destination.minute;
     },
 
     travel() {
-      console.log('calling travel')
+      console.log("calling travel");
       // Set Last Departed time
-      const { hour, minute, } = this.present
-      Object.assign(this.departed, { hour, minute, })
+      const { hour, minute } = this.present;
+      Object.assign(this.departed, { hour, minute });
 
       // Set Present time
       Object.assign(this.present, {
         hour: this.destinationHour(),
-        minute: this.destinationMinute(),
-      })
+        minute: this.destinationMinute()
+      });
     },
 
     setImmediate(...args) {
-      console.log('running setImmediate')
-      return setImmediate(...args)
+      console.log("running setImmediate");
+      return setImmediate(...args);
+    },
+
+    floorIt() {
+      if (!this.hasOpenTaskQueue)
+        this.timeline.push({ queue: "task", steps: [] });
+      this.twoInARow();
     },
 
     // two in a row
-    floorIt() {
-      this.$nextTick(this.setDestinationTime)
-      this.$nextTick(this.travel)
-    },
+    twoInARow() {
+      this.$nextTick(this.setDestinationTime);
+      this.$nextTick(this.travel);
+    }
 
     // consecutive $nextTick
     // floorIt() {
@@ -236,45 +273,53 @@ export default {
     //     .then(this.setDestinationTime)  // 10
     //   })
     // },
-  },
-}
+  }
+};
 </script>
 
 <template>
-<div class="DeLorean">
-  <div class="centeredYRow">
-    <div ref="timeline" class="timeline">
-      <!-- Need this div to force to scroll further left fsr --> <div ref="allSteps">
-        <span
-          v-for="({ queue, steps, }, idx) in timeline"
-          :key="idx"
-          :style="{ color: getColor(queue) }"
-          class="step"
-        >
-          {{ queue === 'task' ? '[' : queue === 'flushQueue' ? '{' : '(' }}
-
+  <div class="DeLorean">
+    <div class="centeredYRow">
+      <div ref="timeline" class="timeline">
+        <!-- Need this div to force to scroll further left fsr -->
+        <div ref="allSteps">
           <span
-            v-for="({ char, type, }, idx) in steps"
+            v-for="({ queue, steps, }, idx) in timeline"
             :key="idx"
-            :style="{ color: getColor(type) }"
+            :style="{ color: getColor(queue) }"
             class="step"
-          >{{ char }}</span>
-
-          {{ queue === 'task' ? ']' : queue === 'flushQueue' ? '}' : ')' }}
-        </span>
+          >
+            {{ queue === 'task' ? '[' : queue === 'flushQueue' ? '{' : '(' }}
+            <span
+              v-for="({ char, type, }, idx) in steps"
+              :key="idx"
+              :style="{ color: getColor(type) }"
+              class="step"
+            >{{ char }}</span>
+            {{ queue === 'task' ? ']' : queue === 'flushQueue' ? '}' : ')' }}
+          </span>
+        </div>
       </div>
+      <DeLoreanButton @click="clearTimeline">x</DeLoreanButton>
     </div>
-    <DeLoreanButton @click="clearTimeline">x</DeLoreanButton>
-  </div>
 
-  <div class="dashboard">
-    <DeLoreanClock v-bind="destination" ref="destination" />
-    <DeLoreanClock v-bind="present" ref="present" />
-    <DeLoreanClock v-bind="departed" ref="departed" />
-  </div>
+    <div class="legend">
+      <span>key:</span>
+      <span
+        v-for="{ label, type } in legend"
+        :key="label"
+        :style="{ color: getColor(type) }"
+      >{{ `${ type }: ${ label }` }}</span>
+    </div>
 
-  <DeLoreanButton @click="floorIt">88 mph</DeLoreanButton>
-</div>
+    <div class="dashboard">
+      <DeLoreanClock v-bind="destination" ref="destination"/>
+      <DeLoreanClock v-bind="present" ref="present"/>
+      <DeLoreanClock v-bind="departed" ref="departed"/>
+    </div>
+
+    <DeLoreanButton @click="floorIt">88 mph</DeLoreanButton>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -284,9 +329,11 @@ export default {
   flex-direction: column;
   align-items: center;
   // justify-content: center;
-  justify-content: space-evenly;  // for when timeline is visible
+  justify-content: space-evenly; // for when timeline is visible
 
-  .centeredYRow { width: 80%; }
+  .centeredYRow {
+    width: 80%;
+  }
 
   .timeline {
     margin-right: 0.5rem;
@@ -298,7 +345,7 @@ export default {
     height: 2rem;
     padding: 0 3%;
     overflow-x: auto;
-    white-space:nowrap;
+    white-space: nowrap;
     font-size: 1rem;
     font-family: Nova;
 
@@ -315,9 +362,20 @@ export default {
   .DeLoreanClock {
     filter: drop-shadow(0 0.5rem 0.3rem #000);
 
-    + .DeLoreanClock { margin-top: 0.2rem; }
+    + .DeLoreanClock {
+      margin-top: 0.2rem;
+    }
   }
 
-  .DeLoreanButton + .DeLoreanButton { margin-left: 1vw; }
+  .DeLoreanButton + .DeLoreanButton {
+    margin-left: 1vw;
+  }
+
+  .legend {
+    color: #fff;
+    :not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
 }
 </style>
