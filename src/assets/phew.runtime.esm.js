@@ -3528,13 +3528,13 @@ function renderMixin (Vue) {
     if(window.timeline) window.timeline[ window.timeline.length - 1 ].steps.push({ char: 'push($)', type: 'push' })
 
     //  NB: Do this in component instead
-    // const fnTimelined = (...args) => {
-    //   if(window.timeline) window.timeline.push({ char: '$()', type: '$' })
-    //   if(fn) return fn(...args)
-    //   else return Promise.resolve(this)
-    // }
+    const fnTimelined = (...args) => {
+      if(window.timeline) window.timeline[ window.timeline.length - 1 ].steps.push({ char: '$()', type: '$' })
+      if(fn) return fn(...args)
+      else return Promise.resolve(this)
+    }
 
-    return nextTick(fn, this)
+    return nextTick(fnTimelined, this)
   };
 
   Vue.prototype._render = function () {

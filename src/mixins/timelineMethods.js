@@ -44,8 +44,6 @@ export default {
     // new flushQ or mTQ are last except for task queues (when length > 1)
 
     log(queue, step) {
-
-      console.log(queue)
       // Short-circuit tasks first
       if (queue === 'task') {
         if (this.lastEl.queue !== queue) this.timeline.push({ queue, steps: [], })

@@ -142,6 +142,7 @@ export default {
 
     travel() {
       console.log('calling travel')
+
       // Set Last Departed time
       const { hour, minute } = this.present
       Object.assign(this.departed, { hour, minute })
@@ -160,8 +161,8 @@ export default {
 
     floorIt() {
       if (!this.hasOpenTaskQueue) this.timeline.push({ queue: 'task', steps: [] })
-      // this.twoInARow()
-      this.consecutiveNextTick()
+      this.twoInARow()
+      // this.consecutiveNextTick()
     },
 
     // two in a row
