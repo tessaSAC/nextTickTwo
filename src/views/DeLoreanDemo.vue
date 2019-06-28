@@ -161,14 +161,14 @@ export default {
 
     floorIt() {
       if (!this.hasOpenTaskQueue) this.timeline.push({ queue: 'task', steps: [] })
-      this.twoInARow()
-      // this.consecutiveNextTick()
+      // this.twoInARow()
+      this.consecutiveNextTick()
     },
 
     // two in a row
     twoInARow() {
-      this.$nextTick(this.setDestinationTime)
-      this.$nextTick(this.travel)
+      this.loggedNextTick(this.setDestinationTime)
+      this.loggedNextTick(this.travel)
     },
 
     // consecutive $nextTick

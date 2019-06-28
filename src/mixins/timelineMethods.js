@@ -77,5 +77,17 @@ export default {
         }
       }
     },
+
+    loggedNextTick(fn) {
+      return this.$nextTick(_ => {
+        // fsr having this render in the correct order causes the console.logs to come out in incorrect order
+        this.push$nextTickCall()  // suspect bc either one triggers nextTick which means that gets logged before the method's log
+        fn()
+      })
+    },
+
+    push$nextTickCall() {
+      this.timeline[ this.lastIdx ].steps.push({ char: '$()', type: '$', })
+    },
   },
 }

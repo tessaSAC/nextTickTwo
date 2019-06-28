@@ -1911,6 +1911,7 @@ function flushCallbacks () {
   callbacks.length = 0;
   for (var i = 0; i < copies.length; i++) {
     copies[i]();
+    // nb: can't trigger render of $nextTick call from here — infinite loop
   }
   console.error('done flushing callbacks')
   // if(window.timeline) window.timeline.push({ char: '}', type: 'flush' }  // this causes infinite loop bc it causes rerender...
@@ -3527,14 +3528,14 @@ function renderMixin (Vue) {
     console.warn('💲nextTick 🤑🤑🤑 pushed')
     if(window.timeline) window.timeline[ window.timeline.length - 1 ].steps.push({ char: 'push($)', type: 'push' })
 
-    //  NB: Do this in component instead
-    const fnTimelined = (...args) => {
-      if(window.timeline) window.timeline[ window.timeline.length - 1 ].steps.push({ char: '$()', type: '$' })
-      if(fn) return fn(...args)
-      else return Promise.resolve(this)
-    }
+    //  NB: Do this in component instead because otherwise the timing is wrong
+    // const fnTimelined = (...args) => {
+    //   if(window.timeline) window.timeline[ window.timeline.length - 1 ].steps.push({ char: '$()', type: '$' })
+    //   if(fn) return fn(...args)
+    //   else return Promise.resolve(this)
+    // }
 
-    return nextTick(fnTimelined, this)
+    return nextTick(fn, this)
   };
 
   Vue.prototype._render = function () {
@@ -4395,7 +4396,7 @@ function queueWatcher (watcher) {
         flushSchedulerQueue();
         return
       }
-      nextTick(flushSchedulerQueue, undefined, true);  // NB: Passing a "pushed by Vue" var to `flushSchedulerQueue`
+      nextTick(flushSchedulerQueue, undefined, true);  // NB: Passing a `pushedByVue` var to `flushSchedulerQueue`
     }
   }
 }
